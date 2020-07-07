@@ -42,20 +42,24 @@ def home_view():
 				letter = index[0]
 				name = str(problem['name'])
 				if len(contestId) <= 4:
-					link = f"<a href=\"https://codeforces.com/contest/{contestId}/problem/{index}\">{name}</a>"
+					link = f"https://codeforces.com/contest/{contestId}/problem/{index}"
 				else:
-					link = f"<a href=\"https://codeforces.com/problemset/gymProblem/{contestId}/{index})\">{name}</a>"
-				chunk = f": {index}. {link}\n"
-				unsolved_problem_by_index[letter].append(chunk)
+					link = f"https://codeforces.com/problemset/gymProblem/{contestId}/{index}"
+				# chunk = f": {index}. {link}\n"
+				temp_list = []
+				temp_list.append(index)
+				temp_list.append(name)
+				temp_list.append(link)
+				unsolved_problem_by_index[letter].append([index, name, link])
 			final_dict = {}
 			for index in unsolved_problem_by_index:
 				if len(unsolved_problem_by_index[index]) > 0:
 					final_dict.update({index: unsolved_problem_by_index[index]})
 
 			print("Unsolved Problems have been identified. Check 'unsolved.txt' file.")
-			print(final_dict)
+			# print(final_dict)
 			print("Status:" + str(status))
-			return render_template('home.html', status=status, total_unsolved=total_unsolved, final_dict=final_dict)
+			return render_template('home.html', status=status, handle=handle, total_unsolved=total_unsolved, final_dict=final_dict)
 		else:
 			comment = response_data['comment']
 			print("Invalid Request")

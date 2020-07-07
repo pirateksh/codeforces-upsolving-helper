@@ -11,13 +11,17 @@
 		<button type="submit">Submit</button>
 	</form>
 	{% if status %}
-		<h3>Status is {{ status }}</h3>
+		<h3>Status: {{ status }}</h3>
 		{% if status == "OK" %}
+			{% if handle %}
+				<h2>Your Handle: {{ handle }}</h2>
+				<h3>Total Problems attempted(at least once) but unsolved are: {{ total_unsolved }}</h3>
+			{% endif %}
 			{% for key, value in final_dict.items() %}
 				<h1>{{ key }}</h1>
 				<ol>
 				{% for problem in value %} 
-					<li>{{ problem }}</li>
+					<li><a href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }}</a></li>
 				{% endfor %}
 				</ol>
 			{% endfor %}
@@ -25,7 +29,7 @@
 			{{ comment }}
 		{% endif %}
 	{% else %}
-		<p>Submit to see status</p>
+		<p>Submit to see status. Please wait after clicking on Submit Button.</p>
 	{% endif %}
 </body>
 </html>
