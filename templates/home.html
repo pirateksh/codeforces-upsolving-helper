@@ -1,35 +1,88 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Codeforces Upsolving Helper</title>
-</head>
-<body>
-	<h1>Codeforces Upsolving Helper</h1>
-	<form method="post" action="https://codeforces-upsolving-helper.herokuapp.com/">
-		<input id="user_handle" type="text" name="user_handle">
-		<label for="user_handle">Codeforces Handle</label>
-		<button type="submit">Submit</button>
-	</form>
-	{% if status %}
-		<h3>Status: {{ status }}</h3>
-		{% if status == "OK" %}
-			{% if handle %}
-				<h2>Your Handle: {{ handle }}</h2>
-				<h3>Total Problems attempted(at least once) but unsolved are: {{ total_unsolved }}</h3>
-			{% endif %}
-			{% for key, value in final_dict.items() %}
-				<h1>{{ key }}</h1>
-				<ol>
-				{% for problem in value %} 
-					<li><a href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }}</a></li>
-				{% endfor %}
-				</ol>
-			{% endfor %}
-		{% else %}
-			{{ comment }}
-		{% endif %}
-	{% else %}
-		<p>Submit to see status. Please wait after clicking on Submit Button.</p>
-	{% endif %}
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}
+	Codeforces Upsolving Helper
+{% endblock %}
+{% block content %}
+	<main>
+		<div class="container">
+			<div class="row">
+				<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+					<div class="card text-center">
+						<form method="post" action="http://127.0.0.1:5000/">
+							<div class="card-header">
+								Enter your Codeforces Handle
+							</div>
+							<div class="card-body">
+								<div class="md-form form-lg input-group my-0">
+									<div class="input-group-prepend">
+								        <span class="input-group-text" id="basic-addon11">@</span>
+								    </div>
+									<input type="text" id="user_handle" name="user_handle" class="form-control form-control-lg" aria-label="Username" aria-describedby="basic-addon11" placeholder="Codeforces Handle" >
+								</div>
+								<button type="submit" class="btn btn-info btn-rounded">Enter</button>
+							</div>
+							<div class="card-footer text-muted">
+							    Please wait <i class="fas fa-clock"></i> after clicking on Enter Button.
+							</div>
+						</form>
+					</div>
+					<br>
+					{% if status %}
+						{% if status == "OK" %}
+							<br/>
+							<div class="card text-center">
+								<div class="card-header">
+									Status: {{ status }}
+								</div>
+								<div class="card-body">
+									{% if handle %}
+										<h2>Your Handle: {{ handle }}</h2>
+										<h3>Total Problems attempted(at least once) but unsolved are: {{ total_unsolved }}</h3>
+									{% endif %}
+								</div>
+								<div class="card-footer text-muted">
+								    <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
+								</div>
+							</div>
+							{% for key, value in final_dict.items() %}
+								<br/>
+								<div class="card text-center">
+									<div class="card-header">
+										{{ key }} (Total: {{ value|length }})
+									</div>
+									<div class="class-body">
+										{% for problem in value %} 
+											<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }}</a></p>
+										{% endfor %}
+									</div>
+								</div>
+							{% endfor %}
+						{% else %}
+							<div class="card text-center">
+								<div class="card-header">
+									Status: {{ status }}
+								</div>
+								<div class="card-body">
+									{{ comment }}
+								</div>
+							</div>
+						{% endif %}
+					{% else %}
+						<div class="card text-center">
+							<div class="card-header">
+								About
+							</div>
+							<div class="card-body">
+								<p class="text-black-50">A web app developed using <a class="text-info" href="https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application" target="_blank">Flask</a> that compiles all the Problems on Codeforces that you have attempted (submitted at least once) but could not get <span class="text-success">Accepted</span> verdict. For convenience, the problems are segregated by level (i.e. A, B, C and so on). Click on the Problem Name to visit the original problem page on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a>, solve it, come back here and repeat. Good Luck and High Rating!
+								</p>
+							</div>
+							<div class="card-footer text-muted">
+							    <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</main>
+{% endblock %}
