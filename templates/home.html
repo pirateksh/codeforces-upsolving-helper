@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Codeforces Upsolving Helper</title>
+</head>
+<body>
+	<h1>Codeforces Upsolving Helper</h1>
+	<form method="post" action="http://127.0.0.1:5000/">
+		<input id="user_handle" type="text" name="user_handle">
+		<label for="user_handle">Codeforces Handle</label>
+		<button type="submit">Submit</button>
+	</form>
+	{% if status %}
+		<h3>Status is {{ status }}</h3>
+		{% if status == "OK" %}
+			{% for key, value in final_dict.items() %}
+				<h1>{{ key }}</h1>
+				<ol>
+				{% for problem in value %} 
+					<li>{{ problem }}</li>
+				{% endfor %}
+				</ol>
+			{% endfor %}
+		{% else %}
+			{{ comment }}
+		{% endif %}
+	{% else %}
+		<p>Submit to see status</p>
+	{% endif %}
+</body>
+</html>
