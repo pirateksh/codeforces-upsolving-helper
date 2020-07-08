@@ -74,6 +74,8 @@ def home_view():
 				contestId = str(problem['contestId'])
 				index = str(problem['index'])
 				letter = index[0]
+				if not letter.isalpha():
+					letter = chr(int(index) + 64)
 				name = str(problem['name'])
 				INF = 10000
 				rating = problem['rating'] if 'rating' in problem else INF

@@ -4,10 +4,27 @@
 {% endblock %}
 {% block content %}
 	<script type="text/javascript">
-		$('.alert').alert()
+		function fade(element) {
+		    var op = 1;  // initial opacity
+		    var timer = setInterval(function () {
+		        if (op <= 0.1){
+		            clearInterval(timer);
+		            element.style.display = 'none';
+		        }
+		        element.style.opacity = op;
+		        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+		        op -= op * 0.1;
+		    }, 50);
+		}
+
 		function f(e) {
-			document.getElementById('connecting_info').innerHTML = 'Connecting....';
-			document.getElementById('connected_info').innerHTML = '';
+			document.getElementById('connecting_info').innerHTML = '<div class="d-flex align-items-center"> <strong>Connecting...</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>';
+			fade(document.getElementById('connected_success'));
+			fade(document.getElementById('connected_danger'));
+		}
+
+		function dismiss(e) {
+			fade(document.getElementById(e));
 		}
 	</script>
 	<main>
@@ -17,7 +34,7 @@
 				<!-- Flashing Messages -->
 				<div id="connecting_info" class="alert alert-info flash alert-dismissible fade show" role="alert">
 			        Welcome to Codeforces Upsolving Helper. Feel free to raise issues / pull requests regarding bugs / improvements.
-			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			        <button onclick="dismiss('connecting_info')" type="button" class="close" data-dismiss="alert" aria-label="Close">
 				    	<span aria-hidden="true">&times;</span>
 				  	</button>
 			    </div>
@@ -25,16 +42,16 @@
 					{% if messages %}
 						{% for category, message in messages %}
 							{% if category == 'error' %}
-								<div id="connected_info" class="alert alert-danger flash alert-dismissible fade show" role="alert">
+								<div id="connected_danger" class="alert alert-danger flash alert-dismissible fade show" role="alert">
 						            {{ message }}
-						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						            <button onclick="dismiss('connected_danger')" type="button" class="close" data-dismiss="alert" aria-label="Close">
 								    	<span aria-hidden="true">&times;</span>
 								  	</button>
 						        </div>
 							{% elif category == 'success' %}
-								<div id="connected_info" class="alert alert-success flash alert-dismissible fade show" role="alert">
+								<div id="connected_success" class="alert alert-success flash alert-dismissible fade show" role="alert">
 						            {{ message }} Scroll to see results.
-						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						            <button onclick="dismiss('connected_success')" type="button" class="close" data-dismiss="alert" aria-label="Close">
 								    	<span aria-hidden="true">&times;</span>
 								  	</button>
 						        </div>
