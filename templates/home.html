@@ -3,11 +3,20 @@
 	Codeforces Upsolving Helper
 {% endblock %}
 {% block content %}
+<script type="text/javascript">
+	function f(e) {
+		document.getElementById('connecting_info').style.visibility='visible';
+		document.getElementById('connected_info').style.visibility='hidden';
+	}
+</script>
 	<main>
 		<div class="container">
 			<section class="mx-4 my-3 py-3">
+				<div id="connecting_info" style="visibility: hidden;" class="alert alert-info flash" role="alert">
+			            Connecting...
+			    </div>
 				{% for message in get_flashed_messages() %}
-			        <div class="alert alert-success flash" role="alert">
+			        <div id="connected_info" class="alert alert-success flash" role="alert">
 			            {{ message }} Scroll to see results.
 			        </div>
 			    {% endfor %}
@@ -23,7 +32,7 @@
 							    </div>
 								<input type="text" id="user_handle" name="user_handle" class="form-control form-control-lg" aria-label="Username" aria-describedby="basic-addon11" placeholder="Codeforces Handle" >
 							</div>
-							<button type="submit" class="btn btn-info btn-rounded">Enter</button>
+							<button onclick="f()" type="submit" class="btn btn-info btn-rounded">Enter</button>
 						</div>
 						<div class="card-footer text-muted">
 						    Please wait <i class="fas fa-clock"></i> after clicking on Enter Button.
@@ -39,11 +48,84 @@
 								Status: {{ status }}
 							</div>
 							<div class="card-body">
-								{% if handle %}
-									<h2>Your Handle: {{ handle }}</h2>
-									<h3>Total Problems attempted(at least once) but unsolved are: {{ total_unsolved }}</h3>
+								{% if user_info.handle %}
+									<h4>
+										{% if user_info.title == 'Newbie' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="grey-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'Pupil' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="light-green-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'Specialist' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="cyan-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'Expert' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="indigo-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'Candidate Master' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="purple-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'Master' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="amber-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'International Master' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="orange-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'Grandmaster' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="red-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'International Grandmaster' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="red-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% elif user_info.title == 'Legendary Grandmaster' %}
+											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="red-text">{{ user_info.title }} {{ user_info.handle }}</a>
+										{% endif %}
+									</h4>
+									<h4>
+										{% if user_info.title == 'Newbie' %}
+											<span class="grey-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'Pupil' %}
+											<span class="light-green-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'Specialist' %}
+											<span class="cyan-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'Expert' %}
+											<span class="indigo-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'Candidate Master' %}
+											<span class="purple-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'Master' %}
+											<span class="amber-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'International Master' %}
+											<span class="orange-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'Grandmaster' %}
+											<span class="red-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'International Grandmaster' %}
+											<span class="red-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% elif user_info.title == 'Legendary Grandmaster' %}
+											<span class="red-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
+										{% endif %}
+										(max. 
+										{% if user_info.max_title == 'Newbie' %}
+											<span class="grey-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'Pupil' %}
+											<span class="light-green-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'Specialist' %}
+											<span class="cyan-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'Expert' %}
+											<span class="indigo-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'Candidate Master' %}
+											<span class="purple-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'Master' %}
+											<span class="amber-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'International Master' %}
+											<span class="orange-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'Grandmaster' %}
+											<span class="red-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'International Grandmaster' %}
+											<span class="red-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% elif user_info.max_title == 'Legendary Grandmaster' %}
+											<span class="red-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
+										{% endif %}
+										)
+									</h4>
+									<h4>
+										{% if user_info.first_name %} {{ user_info.first_name }} {% endif %}
+										{% if user_info.last_name %} {{ user_info.last_name }} {% endif %}
+									</h4>
+									<h4>{% if user_info.organization %} Organization: {{ user_info.organization }} {% endif %}</h4>
+									<h4>Total Problems attempted(at least once) but unsolved are: {{ total_unsolved }}</h4>
 									{% if final_dict|length > 0 %}
-										<i class="fas fa-scroll"></i> Scroll down to see unsolved Problems. 
+										Scroll further down to see unsolved Problems. 
 									{% else %}
 										<h5 class="text-success">Wohooo! You have solved each and every Problem that you ever touched on Codeforces.</h5> 
 										<h4 class="text-danger">OR</h4> 
