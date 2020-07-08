@@ -38,8 +38,14 @@ def home_view():
 	if request.method == 'POST':
 		handle = request.form['user_handle']
 		print("User handle is:" + str(handle))
-		r = requests.get('https://codeforces.com/api/user.status', params={'handle': handle})
-		flash("Connected to Codeforces server.")
+		try:
+			r = requests.get('https://codeforces.com/api/user.status', params={'handle': handle}, timeout=10)
+		except requests.exceptions.ConnectTimeout:
+			flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'error')
+			return render_template('home.html') 
+		except requests.exceptions.ReadTimeout:
+			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
+			return render_template('home.html') 
 		response_data = r.json()
 		status = response_data['status']
 		if status == 'OK':
@@ -69,16 +75,26 @@ def home_view():
 				index = str(problem['index'])
 				letter = index[0]
 				name = str(problem['name'])
+				INF = 10000
+				rating = problem['rating'] if 'rating' in problem else INF
 				link = generate_problem_link(contestId, index)
-				unsolved_problem_by_index[letter].append([index, name, link])
+				unsolved_problem_by_index[letter].append([index, name, link, rating])
 			final_dict = {}
 			for index in unsolved_problem_by_index:
 				if len(unsolved_problem_by_index[index]) > 0:
+					# print(unsolved_problem_by_index[index])
+					unsolved_problem_by_index[index] = sorted(unsolved_problem_by_index[index], key = lambda rating: rating[3])
 					final_dict.update({index: unsolved_problem_by_index[index]})
 			# Fetching User Info
-			r = requests.get('https://codeforces.com/api/user.info', params={'handles': handle})
+			try:
+				r = requests.get('https://codeforces.com/api/user.info', params={'handles': handle}, timeout=10)
+			except requests.exceptions.ConnectTimeout:
+				flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'error')
+				return render_template('home.html') 
+			except requests.exceptions.ReadTimeout:
+				flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
+				return render_template('home.html') 
 			response_data = r.json()
-			# print(response_data['result'][0])
 			user_info_full = response_data['result'][0]
 			user_info = {
 				'handle': handle,
@@ -92,6 +108,7 @@ def home_view():
 				'max_color': get_title(int(user_info_full['maxRating']))[1] if 'maxRating' in user_info_full else "grey-text",
 				'organization': user_info_full['organization'] if 'organization' in user_info_full else "",
 			}
+			flash("Connected to Codeforces server.", 'success')
 			return render_template('home.html', status=status, user_info=user_info, total_unsolved=total_unsolved, final_dict=final_dict)
 		else:
 			comment = response_data['comment']
