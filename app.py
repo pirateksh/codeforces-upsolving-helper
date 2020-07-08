@@ -12,25 +12,25 @@ def generate_problem_link(contestId, index):
 def get_title(rating):
 	title = ""
 	if rating < 1200:
-		title = "Newbie"
+		title = ["Newbie", "grey-text"]
 	elif rating < 1400:
-		title = "Pupil"
+		title = ["Pupil", "light-green-text"]
 	elif rating < 1600:
-		title = "Specialist"
+		title = ["Specialist", "cyan-text"]
 	elif rating < 1900:
-		title = "Expert"
+		title = ["Expert", "indigo-text"]
 	elif rating < 2100:
-		title = "Candidate Master"
+		title = ["Candidate Master", "purple-text"]
 	elif rating < 2300:
-		title = "Master"
+		title = ["Master", "amber-text"]
 	elif rating < 2400:
-		title = "International Master"
+		title = ["International Master", "orange-text"]
 	elif rating < 2600:
-		title = "Grandmaster"
+		title = ["Grandmaster", "red-text"]
 	elif rating < 3000:
-		title = "International Grandmaster"
+		title = ["International Grandmaster", "red-text"]
 	else:
-		title = "Legendary Grandmaster"
+		title = ["Legendary Grandmaster", "red-text"]
 	return title
 
 @app.route("/", methods=['POST', 'GET']) 
@@ -85,9 +85,11 @@ def home_view():
 				'first_name': user_info_full['firstName'] if 'firstName' in user_info_full else "",
 				'last_name': user_info_full['lastName'] if 'lastName' in user_info_full else "",
 				'rating': user_info_full['rating'] if 'rating' in user_info_full else 0,
-				'title': get_title(int(user_info_full['rating'])) if 'rating' in user_info_full else "Newbie",
+				'title': get_title(int(user_info_full['rating']))[0] if 'rating' in user_info_full else "Newbie",
+				'color': get_title(int(user_info_full['rating']))[1] if 'rating' in user_info_full else "grey-text",
 				'max_rating': user_info_full['maxRating'] if 'maxRating' in user_info_full else 0,
-				'max_title': get_title(int(user_info_full['maxRating'])) if 'maxRating' in user_info_full else "Newbie",
+				'max_title': get_title(int(user_info_full['maxRating']))[0] if 'maxRating' in user_info_full else "Newbie",
+				'max_color': get_title(int(user_info_full['maxRating']))[1] if 'maxRating' in user_info_full else "grey-text",
 				'organization': user_info_full['organization'] if 'organization' in user_info_full else "",
 			}
 			return render_template('home.html', status=status, user_info=user_info, total_unsolved=total_unsolved, final_dict=final_dict)

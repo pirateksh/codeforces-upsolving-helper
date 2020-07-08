@@ -5,15 +5,15 @@
 {% block content %}
 <script type="text/javascript">
 	function f(e) {
-		document.getElementById('connecting_info').style.visibility='visible';
-		document.getElementById('connected_info').style.visibility='hidden';
+		document.getElementById('connecting_info').innerHTML = 'Connecting....';
+		document.getElementById('connected_info').innerHTML = '';
 	}
 </script>
 	<main>
 		<div class="container">
 			<section class="mx-4 my-3 py-3">
-				<div id="connecting_info" style="visibility: hidden;" class="alert alert-info flash" role="alert">
-			            Connecting...
+				<div id="connecting_info" class="alert alert-info flash" role="alert">
+			            Welcome to Codeforces Upsolving Helper.
 			    </div>
 				{% for message in get_flashed_messages() %}
 			        <div id="connected_info" class="alert alert-success flash" role="alert">
@@ -50,72 +50,12 @@
 							<div class="card-body">
 								{% if user_info.handle %}
 									<h4>
-										{% if user_info.title == 'Newbie' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="grey-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'Pupil' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="light-green-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'Specialist' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="cyan-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'Expert' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="indigo-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'Candidate Master' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="purple-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'Master' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="amber-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'International Master' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="orange-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'Grandmaster' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="red-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'International Grandmaster' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="red-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% elif user_info.title == 'Legendary Grandmaster' %}
-											<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="red-text">{{ user_info.title }} {{ user_info.handle }}</a>
-										{% endif %}
+										<a target="_blank" href="https://codeforces.com/profile/{{ user_info.handle }}" class="{{ user_info.color }}">{{ user_info.title }} {{ user_info.handle }}</a>
 									</h4>
 									<h4>
-										{% if user_info.title == 'Newbie' %}
-											<span class="grey-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'Pupil' %}
-											<span class="light-green-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'Specialist' %}
-											<span class="cyan-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'Expert' %}
-											<span class="indigo-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'Candidate Master' %}
-											<span class="purple-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'Master' %}
-											<span class="amber-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'International Master' %}
-											<span class="orange-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'Grandmaster' %}
-											<span class="red-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'International Grandmaster' %}
-											<span class="red-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% elif user_info.title == 'Legendary Grandmaster' %}
-											<span class="red-text"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
-										{% endif %}
+										<span class="{{ user_info.color }}"><span class="black-text">Rating: </span> {{ user_info.rating }}</span>
 										(max. 
-										{% if user_info.max_title == 'Newbie' %}
-											<span class="grey-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'Pupil' %}
-											<span class="light-green-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'Specialist' %}
-											<span class="cyan-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'Expert' %}
-											<span class="indigo-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'Candidate Master' %}
-											<span class="purple-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'Master' %}
-											<span class="amber-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'International Master' %}
-											<span class="orange-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'Grandmaster' %}
-											<span class="red-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'International Grandmaster' %}
-											<span class="red-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% elif user_info.max_title == 'Legendary Grandmaster' %}
-											<span class="red-text">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
-										{% endif %}
+										<span class="{{ user_info.max_color }}">{{ user_info.max_title }}, {{ user_info.max_rating }}</span>
 										)
 									</h4>
 									<h4>
