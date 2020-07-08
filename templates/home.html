@@ -3,38 +3,14 @@
 	Codeforces Upsolving Helper
 {% endblock %}
 {% block content %}
-	<script type="text/javascript">
-		function fade(element) {
-		    var op = 1;  // initial opacity
-		    var timer = setInterval(function () {
-		        if (op <= 0.1){
-		            clearInterval(timer);
-		            element.style.display = 'none';
-		        }
-		        element.style.opacity = op;
-		        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-		        op -= op * 0.1;
-		    }, 50);
-		}
-
-		function f(e) {
-			document.getElementById('connecting_info').innerHTML = '<div class="d-flex align-items-center"> <strong>Connecting...</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>';
-			fade(document.getElementById('connected_success'));
-			fade(document.getElementById('connected_danger'));
-		}
-
-		function dismiss(e) {
-			fade(document.getElementById(e));
-		}
-	</script>
 	<main>
 		<div class="container">
 			<section class="mx-4 my-3 py-3">
 
 				<!-- Flashing Messages -->
 				<div id="connecting_info" class="alert alert-info flash alert-dismissible fade show" role="alert">
-			        Welcome to Codeforces Upsolving Helper. Feel free to raise issues / pull requests regarding bugs / improvements.
-			        <button onclick="dismiss('connecting_info')" type="button" class="close" data-dismiss="alert" aria-label="Close">
+			        Welcome to <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"> <b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b>. Feel free to raise <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issues</a> / <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/pulls" class="alert-link">pull requests</a> regarding bugs / improvements.
+			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				    	<span aria-hidden="true">&times;</span>
 				  	</button>
 			    </div>
@@ -44,14 +20,14 @@
 							{% if category == 'error' %}
 								<div id="connected_danger" class="alert alert-danger flash alert-dismissible fade show" role="alert">
 						            {{ message }}
-						            <button onclick="dismiss('connected_danger')" type="button" class="close" data-dismiss="alert" aria-label="Close">
+						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								    	<span aria-hidden="true">&times;</span>
 								  	</button>
 						        </div>
 							{% elif category == 'success' %}
 								<div id="connected_success" class="alert alert-success flash alert-dismissible fade show" role="alert">
 						            {{ message }} Scroll to see results.
-						            <button onclick="dismiss('connected_success')" type="button" class="close" data-dismiss="alert" aria-label="Close">
+						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								    	<span aria-hidden="true">&times;</span>
 								  	</button>
 						        </div>
@@ -65,7 +41,7 @@
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('home_view') }}">
 						<div class="card-header">
-							Enter your Codeforces Handle
+							Enter your <img src="{{ url_for('static', filename='images/codeforces-icon.png') }}" height="35" class="d-inline-block align-top" alt="mdb logo"> <span class="text-info">Codeforces</span> Handle !
 						</div>
 						<div class="card-body">
 							<div class="md-form form-lg input-group my-0">
@@ -117,7 +93,7 @@
 								{% endif %}
 							</div>
 							<div class="card-footer text-muted">
-								<i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
+								Star <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
 							</div>
 						</div>
 						{% for index, problems in final_dict.items() %}
@@ -142,21 +118,21 @@
 								{{ comment }}
 							</div>
 							<div class="card-footer text-muted">
-							    <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
+							    Star <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
 							</div>
 						</div>
 					{% endif %}
 				{% else %}
 					<div class="card text-center">
 						<div class="card-header">
-							About
+							What is <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"><b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b> ?
 						</div>
 						<div class="card-body">
 							<p class="text-black-50">A web app developed using <a class="text-info" href="https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application" target="_blank">Flask</a> that compiles all the Problems on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a> that you have attempted (submitted at least once) but could not get <span class="text-success">Accepted</span> verdict. For convenience, the problems are segregated by level (i.e. A, B, C and so on) and in each level they are sorted in increasing order by rating. Click on the Problem Name to visit the original problem page on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a>, solve it, come back here and repeat. Good Luck and High Rating!
 							</p>
 						</div>
 						<div class="card-footer text-muted">
-						    <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
+						    Star <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
 						</div>
 					</div>
 				{% endif %}

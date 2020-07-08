@@ -1,0 +1,34 @@
+<script type="text/javascript" src="{{ url_for('static', filename='Bootstrap/js/jquery-3.4.1.min.js') }}"></script>
+<!-- Bootstraptq tooltips -->
+<script type="text/javascript" src="{{ url_for('static', filename='Bootstrap/js/popper.min.js') }}"></script>
+<!-- Bootstraptq core JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='Bootstrap/js/bootstrap.min.js') }}"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='Bootstrap/js/mdb.min.js') }}"></script>
+<!-- Initializations -->
+
+<script type="text/javascript">
+        function fade(element) {
+            var op = 1;  // initial opacity
+            var timer = setInterval(function () {
+                if (op <= 0.1){
+                    clearInterval(timer);
+                    element.style.display = 'none';
+                }
+                element.style.opacity = op;
+                element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+                op -= op * 0.1;
+            }, 50);
+        }
+
+        function f(e) {
+            document.getElementById('connecting_info').innerHTML = '<div class="d-flex align-items-center"> <strong>Connecting...</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>';
+            fade(document.getElementById('connected_success'));
+            fade(document.getElementById('connected_danger'));
+        }
+
+        function dismiss(e) {
+            fade(document.getElementById(e));
+        }
+    </script>
+
