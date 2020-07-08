@@ -6,6 +6,11 @@
 	<main>
 		<div class="container">
 			<section class="mx-4 my-3 py-3">
+				{% for message in get_flashed_messages() %}
+			        <div class="alert alert-success flash" role="alert">
+			            {{ message }} Scroll to see results.
+			        </div>
+			    {% endfor %}
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('home_view') }}">
 						<div class="card-header">
@@ -37,7 +42,13 @@
 								{% if handle %}
 									<h2>Your Handle: {{ handle }}</h2>
 									<h3>Total Problems attempted(at least once) but unsolved are: {{ total_unsolved }}</h3>
-									<i class="fas fa-scroll"></i> Scroll down to see unsolved Problems. 
+									{% if final_dict|length > 0 %}
+										<i class="fas fa-scroll"></i> Scroll down to see unsolved Problems. 
+									{% else %}
+										<h5 class="text-success">Wohooo! You have solved each and every Problem that you ever touched on Codeforces.</h5> 
+										<h4 class="text-danger">OR</h4> 
+										<h5 class="text-warning">Probably you have not touched even a single problem on Codeforces.</h5>
+									{% endif %}
 								{% endif %}
 							</div>
 							<div class="card-footer text-muted">
