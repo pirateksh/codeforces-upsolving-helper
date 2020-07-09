@@ -68,7 +68,6 @@ def home_view():
 			for problem in unsolved_problem_set:
 				unsolved_problem_list += [json.loads(problem)]
 			total_unsolved = len(unsolved_problem_list)
-			unsolved_problem_list = sorted(unsolved_problem_list, key = lambda problem: problem['contestId'], reverse=True)
 			unsolved_problem_by_index = {'A':[], 'B':[], 'C':[], 'D':[], 'E':[], 'F':[],'G':[], 'H':[], 'I':[], 'J':[], 'K':[], 'L':[], 'M':[], 'N':[], 'O':[], 'P':[], 'R':[], 'S':[], 'T':[], 'U':[], 'V':[], 'W':[], 'X':[], 'Y':[], 'Z':[]}
 			for problem in unsolved_problem_list:
 				contestId = str(problem['contestId'])
