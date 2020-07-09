@@ -10,9 +10,9 @@
 				<!-- Flashing Messages -->
 				<div id="connecting_info" class="alert alert-info flash alert-dismissible fade show" role="alert">
 			        Welcome to <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"> <b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b>. Feel free to raise <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issues</a> / <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/pulls" class="alert-link">pull requests</a> regarding bugs / improvements.
-			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			        <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				    	<span aria-hidden="true">&times;</span>
-				  	</button>
+				  	</button> -->
 			    </div>
 			    {% with messages = get_flashed_messages(with_categories=true) %}
 					{% if messages %}
