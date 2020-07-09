@@ -1,6 +1,5 @@
 # Codeforces Upsolving Helper
-A web app developed using Flask that compiles all the Problems on Codeforces that you have attempted (submitted at least once) but remained unsolved.
-For convenience, the problems are segregated by level (i.e. **A**, **B**, **C** and so on).
+A web app developed using Flask that compiles all the Problems on Codeforces that you have attempted (submitted at least once) but could not get Accepted verdict. For convenience, the problems are segregated by level (i.e. A, B, C and so on) and in each level they are sorted in increasing order by rating. Click on the Problem Name to visit the original problem page on Codeforces, solve it, come back here and repeat. Good Luck and High Rating!
 
 ## Link to Deployed App
 <a href="https://codeforces-upsolving-helper.herokuapp.com/">Codeforces Upsolving Helper</a>
