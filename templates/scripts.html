@@ -8,10 +8,12 @@
 <!-- Initializations -->
 
 <script type="text/javascript">
-    // Tooltips Initialization
-$(function () {
-$('[data-toggle="tooltip"]').tooltip()
-})
+        // Tooltips Initialization
+        $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+        })
+
+        // https://stackoverflow.com/a/6121270/11671368
         function fade(element) {
             var op = 1;  // initial opacity
             var timer = setInterval(function () {
@@ -23,6 +25,32 @@ $('[data-toggle="tooltip"]').tooltip()
                 element.style.filter = 'alpha(opacity=' + op * 100 + ")";
                 op -= op * 0.1;
             }, 50);
+        }
+
+        // https://stackoverflow.com/a/6121270/11671368
+        function unfade(element) {
+            var op = 0.1;  // initial opacity
+            element.style.display = 'block';
+            var timer = setInterval(function () {
+                if (op >= 1){
+                    clearInterval(timer);
+                }
+                element.style.opacity = op;
+                element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+                op += op * 0.1;
+            }, 10);
+        }
+
+        function toggleSegregation(argument) {
+            if (document.getElementById("radioByIndex").checked){
+                fade(document.getElementById('byRating'));
+                unfade(document.getElementById('byIndex'));    
+                document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-sort-alpha-down"></i> Index (A, B, C and so on)</a>.</div>'
+            } else if (document.getElementById("radioByRating").checked){
+                fade(document.getElementById('byIndex'));
+                unfade(document.getElementById('byRating'));
+                document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-secondary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-chart-line"></i> Rating (Less than 1000, Between 1000 and 1200, and so on)</a>.</div>'
+            }
         }
 
         function f(e) {

@@ -30,7 +30,7 @@
     <link href="{{ url_for('static', filename='Bootstrap/css/style.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Bootstrap/css/style.css') }}">
 </head>
-<body class="peach-gradient">
+<body class="peach-gradient" onload="fade(document.getElementById('byRating'))">
     {% include 'navbar.html' %}
     {% block content %}
     {% endblock %}

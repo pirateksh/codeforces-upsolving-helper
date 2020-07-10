@@ -4,6 +4,9 @@ A web app developed using Flask that compiles all the Problems on Codeforces tha
 ## Link to Deployed App
 <a href="https://codeforces-upsolving-helper.herokuapp.com/">Codeforces Upsolving Helper</a>
 
+## Link to Codeforces Blog
+<a href="https://codeforces.com/blog/entry/79917">Codeforces Upsolving Helper</a>
+
 ## Note
 * Feel free to raise issues regarding bugs/improvement.
 * Star the repository if it helped you in any way.

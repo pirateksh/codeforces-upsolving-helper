@@ -6,33 +6,18 @@
 	<main>
 		<div class="container">
 			<section class="mx-4 my-3 py-3">
-
-				<!-- Flashing Messages -->
-				<div id="connecting_info" class="alert alert-info flash alert-dismissible fade show" role="alert">
-			        Welcome to <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"> <b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b>. Feel free to raise <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issues</a> / <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/pulls" class="alert-link">pull requests</a> regarding bugs / improvements.
-			        <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				    	<span aria-hidden="true">&times;</span>
-				  	</button> -->
-			    </div>
-			    <!-- Flashing Messages -->
-				<div class="alert alert-info flash alert-dismissible fade show" role="alert">
-			        If you witness <a class="alert-link">Internal Server Error</a>, raise an <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issue</a> on github stating the <b>Codeforces Handle</b> you entered.
-			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				    	<span aria-hidden="true">&times;</span>
-				  	</button>
-			    </div>
-			    {% with messages = get_flashed_messages(with_categories=true) %}
+				{% with messages = get_flashed_messages(with_categories=true) %}
 					{% if messages %}
 						{% for category, message in messages %}
 							{% if category == 'error' %}
-								<div id="connected_danger" class="alert alert-danger flash alert-dismissible fade show" role="alert">
+								<div id="connected_danger" class="text-center alert alert-danger flash alert-dismissible fade show" role="alert">
 						            {{ message }}
 						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								    	<span aria-hidden="true">&times;</span>
 								  	</button>
 						        </div>
 							{% elif category == 'success' %}
-								<div id="connected_success" class="alert alert-success flash alert-dismissible fade show" role="alert">
+								<div id="connected_success" class="text-center alert alert-success flash alert-dismissible fade show" role="alert">
 						            {{ message }}
 						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								    	<span aria-hidden="true">&times;</span>
@@ -43,7 +28,27 @@
 					{% endif %}
 				{% endwith %}
 				<!-- Flashing Messages -->
-
+				
+				<div id="connecting_info" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
+			        Welcome to <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"> <b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b>. Feel free to raise <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issues</a> / <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/pulls" class="alert-link">pull requests</a> regarding bugs / improvements.
+			        <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    	<span aria-hidden="true">&times;</span>
+				  	</button> -->
+			    </div>
+			    <div id="update" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
+			        <a class="alert-link">UPD (July 10, 2020):</a> Now Problems can be segregated based on <a class="alert-link">Problem Rating</a> as well. <a 
+			       class="alert-link"> Unrated Problems</a> will be at the end.
+			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    	<span aria-hidden="true">&times;</span>
+				  	</button>
+			    </div>
+			    <!-- Flashing Messages -->
+				<div class="alert alert-warning flash alert-dismissible fade show" role="alert">
+			        If you witness <a class="alert-link">Internal Server Error</a>, try again after sometime. If it persists raise an <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issue</a> on github stating the <b>Codeforces Handle</b> you entered.
+			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    	<span aria-hidden="true">&times;</span>
+				  	</button>
+			    </div>
 				<!-- Form Card -->
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('home_view') }}">
@@ -89,8 +94,8 @@
 										{% if user_info.last_name %} {{ user_info.last_name }} {% endif %}
 									</h4>
 									<h5>{% if user_info.organization %} Organization: {{ user_info.organization }} {% endif %}</h5>
-									<h5>Total Unsolved Problems: {{ total_unsolved }}</h5>
-									{% if final_dict|length > 0 %}
+									<h5>Total Unsolved Problems: {{ unsolved_info.total_unsolved }}</h5>
+									{% if unsolved_info.total_unsolved > 0 %}
 										Scroll further down to see unsolved Problems. 
 									{% else %}
 										<h5 class="text-success">Wohooo! You have solved each and every Problem that you ever touched on Codeforces.</h5> 
@@ -103,19 +108,84 @@
 								Star <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
 							</div>
 						</div>
-						{% for index, problems in final_dict.items() %}
-							<br/>
-							<div class="card text-center">
-								<div class="card-header">
-									{% if index == '#' %}Other(s){% else %}{{ index }}{% endif %} (Total: {{ problems|length }})
-								</div>
-								<div class="class-body">
-									{% for problem in problems %} 
-										<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}) {% else %}(unrated){% endif %}</a></p>
-									{% endfor %}
-								</div>
+						<br/>
+						<div class="card text-center">
+							<div class="card-header">
+								Segregate by Index / Problem Rating
 							</div>
-						{% endfor %}
+							<div class="card-body">
+								<!-- Default inline 1-->
+								<form onchange="toggleSegregation()">
+									<div class="row">
+										<div class="col-6">
+											<div class="custom-control custom-radio">
+											<input class="custom-control-input" type="radio" id="radioByIndex" name="r"  checked>
+									  		<label class="custom-control-label" for="radioByIndex"><i class="fas fa-sort-alpha-down"></i> Index</label>
+									  		</div>
+										</div>
+										<div class="col-6">
+											<div class="custom-control custom-radio">
+											<input class="custom-control-input" type="radio" id="radioByRating" name="r">
+									  		<label class="custom-control-label" for="radioByRating"><i class="fas fa-chart-line"></i> Rating</label>
+									  		</div>
+										</div>
+									</div>
+								</form>
+							</div>
+							<!-- <div class="card-footer text-muted">
+							    Index : A, B, C, and so on. | Rating : <1000, >=1000 && <1500 and so on.
+							</div> -->
+						</div>
+						<br/>
+						<section id="segregationInfo">
+							<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">
+						        Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-sort-alpha-down"></i> Index (A, B, C and so on)</a>.
+						    </div>	
+						</section>
+						
+						<section id="byIndex">
+							{% for index, problems in unsolved_info.unsolved_problem_by_index.items() %}
+								<br/>
+								<div class="card text-center">
+									<div class="card-header">
+										{% if index == '#' %}Other(s){% else %}{{ index }}{% endif %} (Total: {{ problems|length }})
+									</div>
+									<div class="class-body">
+										{% for problem in problems %} 
+											<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}) {% else %}(unrated){% endif %}</a></p>
+										{% endfor %}
+									</div>
+								</div>
+							{% endfor %}
+						</section>
+						<section id="byRating">
+							{% for rating_category, problems in unsolved_info.unsolved_problem_by_rating.items() %}
+								<br/>
+								<div class="card text-center">
+									<div class="card-header">
+										{% if rating_category == '1' %} Less than 1000
+										{% elif rating_category == '2' %} Between 1000 and 1200 (inclusive)
+										{% elif rating_category == '3' %} Between 1300 and 1400 (inclusive)
+										{% elif rating_category == '4' %} Between 1500 and 1600 (inclusive)
+										{% elif rating_category == '5' %} Between 1700 and 1900 (inclusive)
+										{% elif rating_category == '6' %} Between 2000 and 2200 (inclusive)
+										{% elif rating_category == '7' %} Between 2300 and 2400 (inclusive)
+										{% elif rating_category == '8' %} Between 2500 and 2600 (inclusive)
+										{% elif rating_category == '9' %} Between 2700 and 2900 (inclusive)
+										{% elif rating_category == '10' %} Between 3000 and 3200 (inclusive)
+										{% elif rating_category == '11' %} Between 3300 and 3400 (inclusive)
+										{% elif rating_category == '12' %} Greater than or equal to 3500
+										{% elif rating_category == '13' %} Unrated
+										{% endif %}(Total: {{ problems|length }})
+									</div>
+									<div class="class-body">
+										{% for problem in problems %} 
+											<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}){% endif %}</a></p>
+										{% endfor %}
+									</div>
+								</div>
+							{% endfor %}
+						</section>
 					{% else %}
 						<div class="card text-center">
 							<div class="card-header">
@@ -135,7 +205,7 @@
 							What is <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"><b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b> ?
 						</div>
 						<div class="card-body">
-							<p class="text-black-50">A web app developed using <a class="text-info" href="https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application" target="_blank">Flask</a> that compiles all the Problems on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a> that you have attempted (submitted at least once) but could not get <span class="text-success">Accepted</span> verdict. For convenience, the problems are segregated by level (i.e. A, B, C and so on) and in each level they are sorted in increasing order by rating. Click on the Problem Name to visit the original problem page on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a>, solve it, come back here and repeat. Good Luck and High Rating!
+							<p class="text-black-50">A web app developed using <a class="text-info" href="https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application" target="_blank">Flask</a> that compiles all the Problems on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a> that you have attempted (submitted at least once) but could not get <span class="text-success">Accepted</span> verdict. For convenience, the problems can be segregated by <b>Index</b> (i.e. A, B, and so on) OR <b>Rating (i.e. Less than 1000, Between 1000 and 1200, and so on)</b>. Click on the Problem Name to visit the original problem page on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a>, solve it, come back here and repeat. Good Luck and High Rating!
 							</p>
 						</div>
 						<div class="card-footer text-muted">

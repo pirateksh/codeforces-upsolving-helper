@@ -48,6 +48,34 @@ def get_title(rating):
 	return title
 
 
+def get_rating_category(rating):
+	category = ''
+	if rating < 1000:
+		category = '1'
+	elif rating < 1300:
+		category = '2'
+	elif rating < 1500:
+		category = '3'
+	elif rating < 1700:
+		category = '4'
+	elif rating < 2000:
+		category = '5'
+	elif rating < 2300:
+		category = '6'
+	elif rating < 2500:
+		category = '7'
+	elif rating < 2700:
+		category = '8'
+	elif rating < 3000:
+		category = '9'
+	elif rating < 3300:
+		category = '10'
+	elif rating < 3500:
+		category = '11'
+	else:
+		category = '12'
+	return category
+
 @app.route("/", methods=['POST', 'GET']) 
 def home_view(): 
 
@@ -118,6 +146,7 @@ def home_view():
 
 			# Segregating unsolved problems by levels
 			unsolved_problem_by_index = {'A':[], 'B':[], 'C':[], 'D':[], 'E':[], 'F':[],'G':[], 'H':[], 'I':[], 'J':[], 'K':[], 'L':[], 'M':[], 'N':[], 'O':[], 'P':[], 'R':[], 'S':[], 'T':[], 'U':[], 'V':[], 'W':[], 'X':[], 'Y':[], 'Z':[], '#':[]}
+			unsolved_problem_by_rating = {'1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], '10':[], '11':[], '12':[], '13':[]}
 			for problem in unsolved_problem_list:
 				if problem not in dummy_unsolved_problem_list:
 					# Checking if it is not a dummy unsolved problem.
@@ -134,13 +163,27 @@ def home_view():
 						unsolved_problem_by_index[letter].append([index, name, link, rating])
 					else:
 						unsolved_problem_by_index['#'].append([index, name, link, rating])
+					rating_category = get_rating_category(int(rating)) if 'rating' in problem else '13'
+					unsolved_problem_by_rating[rating_category].append([index, name, link, rating])
 
 			# Creating final dictionary to pass to template
-			final_dict = {}
+			final_unsolved_by_index = {}
 			for index in unsolved_problem_by_index:
 				if len(unsolved_problem_by_index[index]) > 0:
 					unsolved_problem_by_index[index] = sorted(unsolved_problem_by_index[index], key = lambda rating: rating[3])
-					final_dict.update({index: unsolved_problem_by_index[index]})
+					final_unsolved_by_index.update({index: unsolved_problem_by_index[index]})
+
+			final_unsolved_by_rating = {}
+			for rating_category in unsolved_problem_by_rating:
+				if len(unsolved_problem_by_rating[rating_category]) > 0:
+					unsolved_problem_by_rating[rating_category] = sorted(unsolved_problem_by_rating[rating_category], key = lambda rating: rating[3])
+					final_unsolved_by_rating.update({rating_category: unsolved_problem_by_rating[rating_category]})
+
+			unsolved_info = {
+				'total_unsolved': total_unsolved,
+				'unsolved_problem_by_index': final_unsolved_by_index,
+				'unsolved_problem_by_rating': final_unsolved_by_rating,
+			}
 
 			# Fetching User Info
 			try:
@@ -167,7 +210,7 @@ def home_view():
 				'organization': user_info_full['organization'] if 'organization' in user_info_full else "",
 			}
 			flash("Connected to Codeforces server. Scroll down to see results.", 'success')
-			return render_template('home.html', status=status, user_info=user_info, total_unsolved=total_unsolved, final_dict=final_dict)
+			return render_template('home.html', status=status, user_info=user_info, unsolved_info=unsolved_info)
 		else:
 			comment = response_data['comment']
 			return render_template('home.html', status=status, comment=comment)
