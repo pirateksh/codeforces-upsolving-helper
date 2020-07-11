@@ -145,7 +145,7 @@ def home_view():
 			total_unsolved = len(unsolved_problem_list) - len(dummy_unsolved_problem_list)
 
 			# Segregating unsolved problems by levels
-			unsolved_problem_by_index = {'A':[], 'B':[], 'C':[], 'D':[], 'E':[], 'F':[],'G':[], 'H':[], 'I':[], 'J':[], 'K':[], 'L':[], 'M':[], 'N':[], 'O':[], 'P':[], 'R':[], 'S':[], 'T':[], 'U':[], 'V':[], 'W':[], 'X':[], 'Y':[], 'Z':[], '#':[]}
+			unsolved_problem_by_index = {'A':{'r':[], 'u':[]}, 'B':{'r':[], 'u':[]}, 'C':{'r':[], 'u':[]}, 'D':{'r':[], 'u':[]}, 'E':{'r':[], 'u':[]}, 'F':{'r':[], 'u':[]},'G':{'r':[], 'u':[]}, 'H':{'r':[], 'u':[]}, 'I':{'r':[], 'u':[]}, 'J':{'r':[], 'u':[]}, 'K':{'r':[], 'u':[]}, 'L':{'r':[], 'u':[]}, 'M':{'r':[], 'u':[]}, 'N':{'r':[], 'u':[]}, 'O':{'r':[], 'u':[]}, 'P':{'r':[], 'u':[]}, 'R':{'r':[], 'u':[]}, 'S':{'r':[], 'u':[]}, 'T':{'r':[], 'u':[]}, 'U':{'r':[], 'u':[]}, 'V':{'r':[], 'u':[]}, 'W':{'r':[], 'u':[]}, 'X':{'r':[], 'u':[]}, 'Y':{'r':[], 'u':[]}, 'Z':{'r':[], 'u':[]}, '#':{'r':[], 'u':[]}}
 			unsolved_problem_by_rating = {'1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], '10':[], '11':[], '12':[], '13':[]}
 			for problem in unsolved_problem_list:
 				if problem not in dummy_unsolved_problem_list:
@@ -159,20 +159,22 @@ def home_view():
 					name = str(problem['name'])
 					rating = problem['rating'] if 'rating' in problem else INF
 					link = generate_problem_link(problemset_name, contestId, index)
-					if letter in unsolved_problem_by_index:
-						unsolved_problem_by_index[letter].append([index, name, link, rating])
-					else:
-						unsolved_problem_by_index['#'].append([index, name, link, rating])
+					if letter not in unsolved_problem_by_index:
+						letter = '#'
+					if rating == INF:  # Unrated Problem
+						unsolved_problem_by_index[letter]['u'].append([index, name, link, rating])
+					else:  # Rated Problem
+						unsolved_problem_by_index[letter]['r'].append([index, name, link, rating])
+
 					rating_category = get_rating_category(int(rating)) if 'rating' in problem else '13'
 					unsolved_problem_by_rating[rating_category].append([index, name, link, rating])
-
 			# Creating final dictionary to pass to template
 			final_unsolved_by_index = {}
 			for index in unsolved_problem_by_index:
-				if len(unsolved_problem_by_index[index]) > 0:
-					unsolved_problem_by_index[index] = sorted(unsolved_problem_by_index[index], key = lambda rating: rating[3])
+				if len(unsolved_problem_by_index[index]['r']) + len(unsolved_problem_by_index[index]['u']) > 0:
+					if len(unsolved_problem_by_index[index]['r']) > 0:
+						unsolved_problem_by_index[index]['r'] = sorted(unsolved_problem_by_index[index]['r'], key = lambda rating: rating[3])
 					final_unsolved_by_index.update({index: unsolved_problem_by_index[index]})
-
 			final_unsolved_by_rating = {}
 			for rating_category in unsolved_problem_by_rating:
 				if len(unsolved_problem_by_rating[rating_category]) > 0:
