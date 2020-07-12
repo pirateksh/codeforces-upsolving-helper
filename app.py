@@ -96,19 +96,22 @@ def home_view():
 		status = response_data['status']
 
 		if status == 'OK':
-
+			"""
+				Connected to Codeforces Server and got response.
+			"""
 			submissions = response_data['result']
-			counter = 1
 			unsolved_problem_set = set([])
 			solved_problem_set = set([])
-
+			queued_problem_set = set([]) # Problems whose submission is still in queue.
 			# Segregating solved and unsolved problems
 			for submission in submissions:
-				verdict = submission['verdict']
+				verdict = submission['verdict'] if 'verdict' in submission else 'QUEUED'
 				problem = submission['problem']
 				handle = submission['author']['members'][0]['handle']
 				if verdict == 'OK':
 					solved_problem_set.add(json.dumps(problem))
+				elif verdict == 'QUEUED':
+					queued_problem_set.add(json.dumps(problem))
 				else:
 					unsolved_problem_set.add(json.dumps(problem))
 
@@ -143,7 +146,7 @@ def home_view():
 
 			# Calculating total unsolved problems
 			total_unsolved = len(unsolved_problem_list) - len(dummy_unsolved_problem_list)
-
+	
 			# Segregating unsolved problems by levels
 			unsolved_problem_by_index = {'A':{'r':[], 'u':[]}, 'B':{'r':[], 'u':[]}, 'C':{'r':[], 'u':[]}, 'D':{'r':[], 'u':[]}, 'E':{'r':[], 'u':[]}, 'F':{'r':[], 'u':[]},'G':{'r':[], 'u':[]}, 'H':{'r':[], 'u':[]}, 'I':{'r':[], 'u':[]}, 'J':{'r':[], 'u':[]}, 'K':{'r':[], 'u':[]}, 'L':{'r':[], 'u':[]}, 'M':{'r':[], 'u':[]}, 'N':{'r':[], 'u':[]}, 'O':{'r':[], 'u':[]}, 'P':{'r':[], 'u':[]}, 'R':{'r':[], 'u':[]}, 'S':{'r':[], 'u':[]}, 'T':{'r':[], 'u':[]}, 'U':{'r':[], 'u':[]}, 'V':{'r':[], 'u':[]}, 'W':{'r':[], 'u':[]}, 'X':{'r':[], 'u':[]}, 'Y':{'r':[], 'u':[]}, 'Z':{'r':[], 'u':[]}, '#':{'r':[], 'u':[]}}
 			unsolved_problem_by_rating = {'1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], '10':[], '11':[], '12':[], '13':[]}
