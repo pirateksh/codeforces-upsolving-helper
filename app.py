@@ -91,8 +91,13 @@ def home_view():
 		except requests.exceptions.ReadTimeout:
 			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
 			return render_template('home.html') 
-
-		response_data = r.json()
+		print("CHECKPOINT A")
+		try:
+			response_data = r.json()
+		except json.decoder.JSONDecodeError:
+			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'error')
+			return render_template('home.html') 
+		print("CHECKPOINT B")
 		status = response_data['status']
 
 		if status == 'OK':
@@ -200,7 +205,11 @@ def home_view():
 				flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
 				return render_template('home.html') 
 
-			response_data = r.json()
+			try:
+				response_data = r.json()
+			except json.decoder.JSONDecodeError:
+				flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'error')
+				return render_template('home.html') 
 			user_info_full = response_data['result'][0]
 			user_info = {
 				'handle': handle,
