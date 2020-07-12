@@ -91,13 +91,12 @@ def home_view():
 		except requests.exceptions.ReadTimeout:
 			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
 			return render_template('home.html') 
-		print("CHECKPOINT A")
+
 		try:
 			response_data = r.json()
 		except json.decoder.JSONDecodeError:
 			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'error')
 			return render_template('home.html') 
-		print("CHECKPOINT B")
 		status = response_data['status']
 
 		if status == 'OK':
@@ -176,6 +175,7 @@ def home_view():
 
 					rating_category = get_rating_category(int(rating)) if 'rating' in problem else '13'
 					unsolved_problem_by_rating[rating_category].append([index, name, link, rating])
+			
 			# Creating final dictionary to pass to template
 			final_unsolved_by_index = {}
 			for index in unsolved_problem_by_index:
@@ -190,6 +190,7 @@ def home_view():
 					final_unsolved_by_rating.update({rating_category: unsolved_problem_by_rating[rating_category]})
 
 			unsolved_info = {
+				# Unsolved information to send to template.
 				'total_unsolved': total_unsolved,
 				'unsolved_problem_by_index': final_unsolved_by_index,
 				'unsolved_problem_by_rating': final_unsolved_by_rating,
@@ -212,6 +213,7 @@ def home_view():
 				return render_template('home.html') 
 			user_info_full = response_data['result'][0]
 			user_info = {
+				# User information to send to template.
 				'handle': handle,
 				'first_name': user_info_full['firstName'] if 'firstName' in user_info_full else "",
 				'last_name': user_info_full['lastName'] if 'lastName' in user_info_full else "",
@@ -230,3 +232,68 @@ def home_view():
 			return render_template('home.html', status=status, comment=comment)
 	else:
 		return render_template('home.html') 
+
+
+
+@app.route("/team_mode/", methods=['POST', 'GET']) 
+def team_mode(): 
+	if request.method == 'POST':
+		handles = str(request.form['team_user_handles']).split(',')
+		if len(handles) > 5:
+			flash("Too many handles! You can enter maximum of 5 handles.", 'warning')
+			return render_template('team_mode.html')
+		print(handles)
+		processed_handles = []
+		for handle in handles:
+			handle = str(handle).strip()
+			if handle:
+				processed_handles.append(handle)
+		if len(handles) > 5:
+			flash("Too many handles! You can enter maximum of 5 handles.", 'warning')
+			return render_template('team_mode.html')
+		payload = {'handles': str(';'.join(processed_handles))}
+		print(processed_handles)
+		# Fetching User Info
+		try:
+			r = requests.get('https://codeforces.com/api/user.info', params=payload, timeout=10)
+		except requests.exceptions.ConnectTimeout:
+			flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'error')
+			return render_template('team_mode.html')
+		except requests.exceptions.ReadTimeout:
+			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
+			return render_template('team_mode.html')
+
+		try:
+			response_data = r.json()
+		except json.decoder.JSONDecodeError:
+			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'error')
+			return render_template('team_mode.html') 
+		# print(response_data)
+		status = response_data['status']
+
+		if status == 'OK':
+			team = response_data['result']
+			team_info = []
+			for user in team:
+				team_info.append({
+					'handle': user['handle'],
+					# 'first_name': user['firstName'] if 'firstName' in user else "",
+					# 'last_name': user['lastName'] if 'lastName' in user else "",
+					'rating': user['rating'] if 'rating' in user else 0,
+					'title': get_title(int(user['rating']))[0] if 'rating' in user else "Unrated",
+					'color': get_title(int(user['rating']))[1] if 'rating' in user else "text-dark",
+					# 'max_rating': user['maxRating'] if 'maxRating' in user else 0,
+					# 'max_title': get_title(int(user['maxRating']))[0] if 'maxRating' in user else "Unrated",
+					# 'max_color': get_title(int(user['maxRating']))[1] if 'maxRating' in user else "text-dark",
+					# 'organization': user['organization'] if 'organization' in user else "",
+				})
+			print(team_info)
+			flash('Connected to Codeforces Server.', 'success')
+			return render_template('team_mode.html', status=status, team_info=team_info)
+		else:
+			comment = response_data['comment']
+			flash(comment, 'error')
+			return render_template('team_mode.html', status=status, comment=comment)
+		return render_template('team_mode.html')
+	else:
+		return render_template('team_mode.html') 
