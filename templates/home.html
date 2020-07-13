@@ -6,49 +6,9 @@
 	<main>
 		<div class="container">
 			<section class="mx-4 my-3 py-3">
-				{% with messages = get_flashed_messages(with_categories=true) %}
-					{% if messages %}
-						{% for category, message in messages %}
-							{% if category == 'error' %}
-								<div id="connected_danger" class="text-center alert alert-danger flash alert-dismissible fade show" role="alert">
-						            {{ message }}
-						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								    	<span aria-hidden="true">&times;</span>
-								  	</button>
-						        </div>
-							{% elif category == 'success' %}
-								<div id="connected_success" class="text-center alert alert-success flash alert-dismissible fade show" role="alert">
-						            {{ message }}
-						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								    	<span aria-hidden="true">&times;</span>
-								  	</button>
-						        </div>
-							{% endif %}	
-						{% endfor %}
-					{% endif %}
-				{% endwith %}
-				<!-- Flashing Messages -->
-
-				<div id="connecting_info" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
-			        Welcome to <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"> <b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b>. Feel free to raise <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issues</a> / <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/pulls" class="alert-link">pull requests</a> regarding bugs / improvements.
-			        <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				    	<span aria-hidden="true">&times;</span>
-				  	</button> -->
-			    </div>
-			    <div id="update" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
-			        <a class="alert-link">UPD (July 10, 2020):</a> Now Problems can be segregated based on <a class="alert-link">Problem Rating</a> as well. <a 
-			       class="alert-link"> Unrated Problems</a> will be at the end.
-			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				    	<span aria-hidden="true">&times;</span>
-				  	</button>
-			    </div>
-			    <!-- Flashing Messages -->
-				<div class="alert alert-warning flash alert-dismissible fade show" role="alert">
-			        If you witness <a class="alert-link">Internal Server Error</a>, try again after sometime. If it persists raise an <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issue</a> on github stating the <b>Codeforces Handle</b> you entered.
-			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				    	<span aria-hidden="true">&times;</span>
-				  	</button>
-			    </div>
+				<!-- Messages Template Included -->
+				{% include 'messages.html' %}
+				
 				<!-- Form Card -->
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('home_view') }}">

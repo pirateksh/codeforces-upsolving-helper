@@ -76,6 +76,28 @@ def get_rating_category(rating):
 		category = '12'
 	return category
 
+
+# def user_information(handles):
+# 	"""
+# 		Function to return relevant user information in form of dictionary.
+# 	"""
+# 	payload = {'handles': str(';'.join(handles))}
+# 	try:
+# 		r = requests.get('https://codeforces.com/api/user.info', params=payload, timeout=10)
+# 	except requests.exceptions.ConnectTimeout:
+# 		flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'error')
+# 		return render_template('team_mode.html')
+# 	except requests.exceptions.ReadTimeout:
+# 		flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
+# 		return render_template('team_mode.html')
+
+# 	try:
+# 		response_data = r.json()
+# 	except json.decoder.JSONDecodeError:
+# 		flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'error')
+# 		return render_template('team_mode.html') 
+
+
 @app.route("/", methods=['POST', 'GET']) 
 def home_view(): 
 

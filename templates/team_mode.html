@@ -5,47 +5,14 @@
 {% block content %}
 	<main>
 		<div class="container">
-			<section class="mx-4 my-3 py-3">
-				{% with messages = get_flashed_messages(with_categories=true) %}
-					{% if messages %}
-						{% for category, message in messages %}
-							{% if category == 'error' %}
-								<div id="connected_danger" class="text-center alert alert-danger flash alert-dismissible fade show" role="alert">
-						            {{ message }}
-						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								    	<span aria-hidden="true">&times;</span>
-								  	</button>
-						        </div>
-							{% elif category == 'success' %}
-								<div id="connected_success" class="text-center alert alert-success flash alert-dismissible fade show" role="alert">
-						            {{ message }}
-						            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								    	<span aria-hidden="true">&times;</span>
-								  	</button>
-						        </div>
-							{% endif %}	
-						{% endfor %}
-					{% endif %}
-				{% endwith %}
-				<!-- Flashing Messages -->
 
-				<div id="connecting_info" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
-			        Welcome to <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"> <b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b>. Feel free to raise <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issues</a> / <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/pulls" class="alert-link">pull requests</a> regarding bugs / improvements.
-			        <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				    	<span aria-hidden="true">&times;</span>
-				  	</button> -->
-			    </div>
 			    <div id="update" class="text-center alert alert-warning flash alert-dismissible fade show" role="alert">
 			        You are viewing <a class="alert-link">Team Mode</a>. This mode is currently under development.
 			    </div>
-			    <!-- Flashing Messages -->
-<!-- 				<div class="alert alert-warning flash alert-dismissible fade show" role="alert">
-			        If you witness <a class="alert-link">Internal Server Error</a>, try again after sometime. If it persists raise an <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issue</a> on github stating the <b>Codeforces Handle</b> you entered.
-			        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				    	<span aria-hidden="true">&times;</span>
-				  	</button>
-			    </div> -->
-				<!-- Form Card -->
+
+			    <!-- Messages Template Included -->
+			    {% include 'messages.html' %}
+
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('team_mode') }}">
 						<div class="card-header">
@@ -78,23 +45,26 @@
 								{% if team_info %}
 									<h5>Team Info ({{ team_info|length }} members)</h5>
 									<div class="table-responsive text-nowrap">
-										<table class="table table-hover table-sm">
+										<table class="table table-hover table-sm table-bordered">
 											<thead>
 										    	<tr>
-										      		<th scope="col">#</th>
+										      		<th class="d-none d-sm-block d-md-block d-lg-block d-xl-block" scope="col">#</th>
 										      		<th scope="col">Handle</th>
+										      		<th scope="col">Title (Rating)</th>
 										    	</tr>
 										  	</thead>
 										  	<tbody>
 										  		{% for user in team_info %}
 										  		 	<tr>
-											  			<th scope="row">{{ loop.index }}</th>
-											  			<td><b><a target="_blank" href="https://codeforces.com/profile/{{ user.handle }}" class="{{ user.color }}">{{ user.title }} {{ user.handle }}</a></b></td>
+											  			<th class="d-none d-sm-block d-md-block d-lg-block d-xl-block" scope="row">{{ loop.index }}</th>
+											  			<td><b><a target="_blank" href="https://codeforces.com/profile/{{ user.handle }}" class="{{ user.color }}">{{ user.handle }}</a></b></td>
+											  			<td class="{{ user.color }}"><b>{{ user.title }} ({{ user.rating }})</b> </td>
 											  		</tr>
 										  		{% endfor %}
 										 	</tbody>
 										</table>
 									</div>
+									<h5>Total Common Unsolved Problems: </h5>
 								{% endif %}
 							</div>
 							<div class="card-footer text-muted">
