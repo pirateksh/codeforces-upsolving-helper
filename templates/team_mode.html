@@ -5,27 +5,26 @@
 {% block content %}
 	<main>
 		<div class="container">
-
-			    <div id="update" class="text-center alert alert-warning flash alert-dismissible fade show" role="alert">
-			        You are viewing <a class="alert-link">Team Mode</a>. This mode is currently under development.
-			    </div>
-
+			<section class="mx-4 my-3 py-3">
 			    <!-- Messages Template Included -->
 			    {% include 'messages.html' %}
 
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('team_mode') }}">
 						<div class="card-header">
-							Enter your <img src="{{ url_for('static', filename='images/codeforces-icon.png') }}" height="35" class="d-inline-block align-top" alt="mdb logo"> <span class="text-info">Codeforces</span> Handle !
+							Enter <img src="{{ url_for('static', filename='images/codeforces-icon.png') }}" height="35" class="d-inline-block align-top" alt="mdb logo"> <span class="text-info">Codeforces</span> Handle(s) (max. 5)
 						</div>
 						<div class="card-body">
 							<div class="md-form form-lg input-group my-0">
 								<div class="input-group-prepend">
 							        <span class="input-group-text" id="basic-addon11">@</span>
 							    </div>
-								<input type="text" id="team_user_handles" name="team_user_handles" class="form-control form-control-lg" aria-label="Username" aria-describedby="basic-addon11" placeholder="Codeforces Handle(s) separated by comma (max. 5)" >
+								<input type="text" id="team_user_handles" name="team_user_handles" class="form-control form-control-lg" aria-label="Username" aria-describedby="basic-addon11" placeholder="Codeforces Handle(s)" >
 							</div>
-							<button onclick="f()" type="submit" class="btn btn-info btn-rounded">Enter</button>
+							<br/>
+							<h5>Separate handles by comma (,).</h5>
+							<h5><u>Example</u>: tourist, petr, vovuh</h5>
+							<button onclick="f('team_mode')" type="submit" class="btn btn-info btn-rounded">Enter</button>
 						</div>
 						<div class="card-footer text-muted">
 						    Please wait <i class="fas fa-clock"></i> after clicking on Enter Button.
@@ -43,7 +42,7 @@
 							</div>
 							<div class="card-body">
 								{% if team_info %}
-									<h5>Team Info ({{ team_info|length }} members)</h5>
+									<h5><i class="fas fa-users"></i> Team Info ({{ team_info|length }} members)</h5>
 									<div class="table-responsive text-nowrap">
 										<table class="table table-hover table-sm table-bordered">
 											<thead>
@@ -90,13 +89,22 @@
 						</div>
 					{% endif %}
 				{% else %}
-					<div class="card text-center">
+					<div id="teamModeDescription" class="card text-center">
 						<div class="card-header">
-							What is <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"><b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b> ?
+							What is <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"><b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span> <span class="text-info"><i class="fas fa-users"></i> Team Mode</span></b> ?
 						</div>
 						<div class="card-body">
-							<p class="text-black-50">A web app developed using <a class="text-info" href="https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application" target="_blank">Flask</a> that compiles all the Problems on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a> that you have attempted (submitted at least once) but could not get <span class="text-success">Accepted</span> verdict. For convenience, the problems can be segregated by <b>Index</b> (i.e. A, B, and so on) OR <b>Rating (i.e. Less than 1000, Between 1000 and 1200, and so on)</b>. Click on the Problem Name to visit the original problem page on <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a>, solve it, come back here and repeat. Good Luck and High Rating!
+							<p>
+								In <b class="text-info"><i class="fas fa-users"></i> Team Mode</b>, you can enter handle(s) of your <b>team members</b> separated by <b>comma(,)</b> (<b>max. 5 handles</b>). On pressing Enter, you will get the list of those problems of <a class="text-info" href="https://codeforces.com/" target="_blank">Codeforces</a>  which has been <b>attempted by atleast one member</b> of your team but is <b>solved by none</b>.
+								<br/>
+								<button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#furtherClarificationModal">
+						          <i class="fas fa-flushed"></i> Still Confused?
+						        </button>
+						        {% include 'modal_further_clarification.html' %}
+								<b>Problem segregation</b> will be similar to that of <b>Normal Mode</b>.
 							</p>
+							
+					        
 						</div>
 						<div class="card-footer text-muted">
 						    Star <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>

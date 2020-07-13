@@ -13,7 +13,7 @@
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('home_view') }}">
 						<div class="card-header">
-							Enter your <img src="{{ url_for('static', filename='images/codeforces-icon.png') }}" height="35" class="d-inline-block align-top" alt="mdb logo"> <span class="text-info">Codeforces</span> Handle !
+							Enter your <img src="{{ url_for('static', filename='images/codeforces-icon.png') }}" height="35" class="d-inline-block align-top" alt="mdb logo"> <span class="text-info">Codeforces</span> Handle
 						</div>
 						<div class="card-body">
 							<div class="md-form form-lg input-group my-0">
@@ -22,7 +22,7 @@
 							    </div>
 								<input type="text" id="user_handle" name="user_handle" class="form-control form-control-lg" aria-label="Username" aria-describedby="basic-addon11" placeholder="Codeforces Handle" >
 							</div>
-							<button onclick="f()" type="submit" class="btn btn-info btn-rounded">Enter</button>
+							<button onclick="f('home')" type="submit" class="btn btn-info btn-rounded">Enter</button>
 						</div>
 						<div class="card-footer text-muted">
 						    Please wait <i class="fas fa-clock"></i> after clicking on Enter Button.
