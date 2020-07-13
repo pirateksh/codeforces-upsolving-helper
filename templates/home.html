@@ -8,7 +8,7 @@
 			<section class="mx-4 my-3 py-3">
 				<!-- Messages Template Included -->
 				{% include 'messages.html' %}
-				
+
 				<!-- Form Card -->
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('home_view') }}">
@@ -69,134 +69,7 @@
 							</div>
 						</div>
 						<br/>
-						<div class="card text-center">
-							<div class="card-header">
-								Segregate by Index / Problem Rating
-							</div>
-							<div class="card-body">
-								<!-- Default inline 1-->
-								<form onchange="toggleSegregation()">
-									<div class="row">
-										<div class="col-6">
-											<div class="custom-control custom-radio">
-											<input class="custom-control-input" type="radio" id="radioByIndex" name="r"  checked>
-									  		<label class="custom-control-label" for="radioByIndex"><i class="fas fa-sort-alpha-down"></i> Index</label>
-									  		</div>
-										</div>
-										<div class="col-6">
-											<div class="custom-control custom-radio">
-											<input class="custom-control-input" type="radio" id="radioByRating" name="r">
-									  		<label class="custom-control-label" for="radioByRating"><i class="fas fa-chart-line"></i> Rating</label>
-									  		</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<br/>
-						<section id="segregationInfo">
-							<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">
-						        Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-sort-alpha-down"></i> Index (A, B, C and so on)</a>.
-						    </div>	
-						</section>
-						
-						<!-- Problems Segregated by Index -->
-						<section id="byIndex">
-							{% for index, problems in unsolved_info.unsolved_problem_by_index.items() %}
-								<br/>
-								<div class="card text-center">
-									<div class="card-header">
-										<b>
-										{% if index == '#' %}Other(s){% else %}{{ index }}{% endif %} (Total: {{ problems['r']|length + problems['u']|length }})
-										</b>
-									</div>
-									<div class="class-body">
-										{% if problems['r']|length > 0 and problems['u']|length > 0 %}
-											<!-- For >= Large Screens -->
-											<div class="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-												<div class="row">
-													<div class="col-6">
-														<p class="text-center"><b><u>Rated (Total: {{ problems['r']|length }})</u></b></p>
-														{% for problem in problems['r'] %} 
-															<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}) {% else %}(unrated){% endif %}</a></p>
-														{% endfor %}
-													</div>
-													<div class="col-6">
-														<p class="text-center"><b><u>Unrated (Total: {{ problems['u']|length }})</u></b></p>
-														{% for problem in problems['u'] %} 
-															<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }}</a></p>
-														{% endfor %}
-													</div> 
-												</div>
-											</div>
-											<!-- For >= Large Screens -->
-											<!-- For Less than Large Screens -->
-											<div class="d-xs-block d-sm-none d-md-none d-lg-none d-xl-none">
-												<!-- <div class="row"> -->
-													<p class="text-center"><b><u>Rated (Total: {{ problems['r']|length }})</u></b></p>
-													{% for problem in problems['r'] %} 
-														<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}) {% else %}(unrated){% endif %}</a></p>
-													{% endfor %}
-													<hr/>
-												<!-- </div>
-												<div class="row"> -->
-													<p class="text-center"><b><u>Unrated (Total: {{ problems['u']|length }})</u></b></p>
-													{% for problem in problems['u'] %} 
-														<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }}</a></p>
-													{% endfor %}
-												<!-- </div> -->
-											</div>
-											<!-- For Less than Large Screens -->
-										{% elif problems['r']|length > 0 and problems['u']|length == 0 %}
-											<p class="text-center"><u>All are <b>Rated</b> in <b>{% if index == '#' %}Other(s){% else %}{{ index }}{% endif %}</b></u></p>
-											{% for problem in problems['r'] %} 
-												<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}) {% else %}(unrated){% endif %}</a></p>
-											{% endfor %}
-										{% elif problems['r']|length == 0 and problems['u']|length > 0 %}
-											<p class="text-center"><u>All are <b>Unrated</b> in <b>{% if index == '#' %}Other(s){% else %}{{ index }}{% endif %}</b></u></p>
-											{% for problem in problems['u'] %} 
-												<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }}</a></p>
-											{% endfor %}
-										{% endif %}
-										
-									</div>
-								</div>
-							{% endfor %}
-						</section>
-						<!-- Problems Segregated by Index -->
-
-						<!-- Problems Segregated by Rating -->
-						<section id="byRating">
-							{% for rating_category, problems in unsolved_info.unsolved_problem_by_rating.items() %}
-								<br/>
-								<div class="card text-center">
-									<div class="card-header">
-										<b>
-										{% if rating_category == '1' %} Less than 1000
-										{% elif rating_category == '2' %} Between 1000 and 1200 (inclusive)
-										{% elif rating_category == '3' %} Between 1300 and 1400 (inclusive)
-										{% elif rating_category == '4' %} Between 1500 and 1600 (inclusive)
-										{% elif rating_category == '5' %} Between 1700 and 1900 (inclusive)
-										{% elif rating_category == '6' %} Between 2000 and 2200 (inclusive)
-										{% elif rating_category == '7' %} Between 2300 and 2400 (inclusive)
-										{% elif rating_category == '8' %} Between 2500 and 2600 (inclusive)
-										{% elif rating_category == '9' %} Between 2700 and 2900 (inclusive)
-										{% elif rating_category == '10' %} Between 3000 and 3200 (inclusive)
-										{% elif rating_category == '11' %} Between 3300 and 3400 (inclusive)
-										{% elif rating_category == '12' %} Greater than or equal to 3500
-										{% elif rating_category == '13' %} Unrated
-										{% endif %}(Total: {{ problems|length }})
-										</b>
-									</div>
-									<div class="class-body">
-										{% for problem in problems %} 
-											<p><a class="text-danger" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}){% endif %}</a></p>
-										{% endfor %}
-									</div>
-								</div>
-							{% endfor %}
-						</section>
-						<!-- Problems Segregated by Rating -->
+						{% include 'problems.html' %}
 					{% else %}
 						<div class="card text-center">
 							<div class="card-header">

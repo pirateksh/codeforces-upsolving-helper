@@ -64,47 +64,18 @@
 										 	</tbody>
 										</table>
 									</div>
-									<h5>Total Common Unsolved Problems: </h5>
+									<h5>Total Common Unsolved Problems: {{ unsolved_info.total_unsolved }}</h5>
 								{% endif %}
 							</div>
 							<div class="card-footer text-muted">
 								Star <i class="fas fa-star black-text"></i> the <a class="text-info" href="https://github.com/pirateksh/codeforces-upsolving-helper" target="_blank">repository</a> on Github if this helped you. <i class="fas fa-grin yellow-text"></i>
 							</div>
 						</div>
-						<br/>
-						<div class="card text-center">
-							<div class="card-header">
-								Segregate by Index / Problem Rating
-							</div>
-							<div class="card-body">
-								<!-- Default inline 1-->
-								<form onchange="toggleSegregation()">
-									<div class="row">
-										<div class="col-6">
-											<div class="custom-control custom-radio">
-											<input class="custom-control-input" type="radio" id="radioByIndex" name="r"  checked>
-									  		<label class="custom-control-label" for="radioByIndex"><i class="fas fa-sort-alpha-down"></i> Index</label>
-									  		</div>
-										</div>
-										<div class="col-6">
-											<div class="custom-control custom-radio">
-											<input class="custom-control-input" type="radio" id="radioByRating" name="r">
-									  		<label class="custom-control-label" for="radioByRating"><i class="fas fa-chart-line"></i> Rating</label>
-									  		</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<br/>
-						<section id="segregationInfo">
-							<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">
-						        Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-sort-alpha-down"></i> Index (A, B, C and so on)</a>.
-						    </div>	
-						</section>
 						
-						
-						<!-- Problems Segregated by Rating -->
+						<br/>
+
+						{% include 'problems.html' %}
+
 					{% else %}
 						<div class="card text-center">
 							<div class="card-header">

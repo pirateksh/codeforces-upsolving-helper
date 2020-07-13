@@ -98,6 +98,83 @@ def get_rating_category(rating):
 # 		return render_template('team_mode.html') 
 
 
+def parse_problems(solved_problem_set, unsolved_problem_set):
+	# Further segregating dummy unsolved problems
+	for problem in solved_problem_set:
+		if problem in unsolved_problem_set:
+			unsolved_problem_set.remove(problem)
+
+	unsolved_problem_list = []
+	for problem in unsolved_problem_set:
+		unsolved_problem_list += [json.loads(problem)]
+
+	solved_problem_list = []
+	for problem in solved_problem_set:
+		solved_problem_list += [json.loads(problem)]
+
+	"""
+		Further Segregation of dummy unsolved problems:
+		Checking for same problem which appears in parallel Div. 1 and Div. 2
+		contest with different contestId.
+	"""
+	dummy_unsolved_problem_list = []
+	for unsolved_problem in unsolved_problem_list:
+		for solved_problem in solved_problem_list:
+			if solved_problem['name'] == unsolved_problem['name']:
+				solved_contest_id = solved_problem['contestId'] if 'contestId' in solved_problem else -1
+				unsolved_contest_id = unsolved_problem['contestId'] if 'contestId' in unsolved_problem else -1
+
+				if unsolved_contest_id != -1 and (unsolved_contest_id + 1 == solved_contest_id or unsolved_contest_id - 1 == solved_contest_id):
+					# This problem appeared in both Div. 1 and Div. 2 rounds and has been solved in one of them
+					dummy_unsolved_problem_list.append(unsolved_problem)
+
+	# Calculating total unsolved problems
+	total_unsolved = len(unsolved_problem_list) - len(dummy_unsolved_problem_list)
+
+	# Segregating unsolved problems by levels
+	unsolved_problem_by_index = {'A':{'r':[], 'u':[]}, 'B':{'r':[], 'u':[]}, 'C':{'r':[], 'u':[]}, 'D':{'r':[], 'u':[]}, 'E':{'r':[], 'u':[]}, 'F':{'r':[], 'u':[]},'G':{'r':[], 'u':[]}, 'H':{'r':[], 'u':[]}, 'I':{'r':[], 'u':[]}, 'J':{'r':[], 'u':[]}, 'K':{'r':[], 'u':[]}, 'L':{'r':[], 'u':[]}, 'M':{'r':[], 'u':[]}, 'N':{'r':[], 'u':[]}, 'O':{'r':[], 'u':[]}, 'P':{'r':[], 'u':[]}, 'R':{'r':[], 'u':[]}, 'S':{'r':[], 'u':[]}, 'T':{'r':[], 'u':[]}, 'U':{'r':[], 'u':[]}, 'V':{'r':[], 'u':[]}, 'W':{'r':[], 'u':[]}, 'X':{'r':[], 'u':[]}, 'Y':{'r':[], 'u':[]}, 'Z':{'r':[], 'u':[]}, '#':{'r':[], 'u':[]}}
+	unsolved_problem_by_rating = {'1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], '10':[], '11':[], '12':[], '13':[]}
+	for problem in unsolved_problem_list:
+		if problem not in dummy_unsolved_problem_list:
+			# Checking if it is not a dummy unsolved problem.
+			contestId = str(problem['contestId']) if 'contestId' in problem else -1
+			problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
+			index = str(problem['index'])
+			letter = index[0]
+			if not letter.isalpha():
+				letter = chr(int(index) + 64)
+			name = str(problem['name'])
+			rating = problem['rating'] if 'rating' in problem else INF
+			link = generate_problem_link(problemset_name, contestId, index)
+			if letter not in unsolved_problem_by_index:
+				letter = '#'
+			if rating == INF:  # Unrated Problem
+				unsolved_problem_by_index[letter]['u'].append([index, name, link, rating])
+			else:  # Rated Problem
+				unsolved_problem_by_index[letter]['r'].append([index, name, link, rating])
+
+			rating_category = get_rating_category(int(rating)) if 'rating' in problem else '13'
+			unsolved_problem_by_rating[rating_category].append([index, name, link, rating])
+	
+	# Creating final dictionary to pass to template
+	final_unsolved_by_index = {}
+	for index in unsolved_problem_by_index:
+		if len(unsolved_problem_by_index[index]['r']) + len(unsolved_problem_by_index[index]['u']) > 0:
+			if len(unsolved_problem_by_index[index]['r']) > 0:
+				unsolved_problem_by_index[index]['r'] = sorted(unsolved_problem_by_index[index]['r'], key = lambda rating: rating[3])
+			final_unsolved_by_index.update({index: unsolved_problem_by_index[index]})
+	final_unsolved_by_rating = {}
+	for rating_category in unsolved_problem_by_rating:
+		if len(unsolved_problem_by_rating[rating_category]) > 0:
+			unsolved_problem_by_rating[rating_category] = sorted(unsolved_problem_by_rating[rating_category], key = lambda rating: rating[3])
+			final_unsolved_by_rating.update({rating_category: unsolved_problem_by_rating[rating_category]})
+
+	return {
+		'total_unsolved': total_unsolved, 
+		'unsolved_problem_by_index': final_unsolved_by_index, 
+		'unsolved_problem_by_rating': final_unsolved_by_rating,
+	}
+
 @app.route("/", methods=['POST', 'GET']) 
 def home_view(): 
 
@@ -108,16 +185,19 @@ def home_view():
 		try:
 			r = requests.get('https://codeforces.com/api/user.status', params={'handle': handle}, timeout=10)
 		except requests.exceptions.ConnectTimeout:
-			flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'error')
+			flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
 			return render_template('home.html') 
 		except requests.exceptions.ReadTimeout:
-			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
+			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
+			return render_template('home.html') 
+		except requests.exceptions.ConnectionError:
+			flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
 			return render_template('home.html') 
 
 		try:
 			response_data = r.json()
 		except json.decoder.JSONDecodeError:
-			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'error')
+			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
 			return render_template('home.html') 
 		status = response_data['status']
 
@@ -141,97 +221,25 @@ def home_view():
 				else:
 					unsolved_problem_set.add(json.dumps(problem))
 
-			# Further segregating dummy unsolved problems
-			for problem in solved_problem_set:
-				if problem in unsolved_problem_set:
-					unsolved_problem_set.remove(problem)
-
-			unsolved_problem_list = []
-			for problem in unsolved_problem_set:
-				unsolved_problem_list += [json.loads(problem)]
-
-			solved_problem_list = []
-			for problem in solved_problem_set:
-				solved_problem_list += [json.loads(problem)]
-
-			"""
-				Further Segregation of dummy unsolved problems:
-				Checking for same problem which appears in parallel Div. 1 and Div. 2
-				contest with different contestId.
-			"""
-			dummy_unsolved_problem_list = []
-			for unsolved_problem in unsolved_problem_list:
-				for solved_problem in solved_problem_list:
-					if solved_problem['name'] == unsolved_problem['name']:
-						solved_contest_id = solved_problem['contestId'] if 'contestId' in solved_problem else -1
-						unsolved_contest_id = unsolved_problem['contestId'] if 'contestId' in unsolved_problem else -1
-
-						if unsolved_contest_id != -1 and (unsolved_contest_id + 1 == solved_contest_id or unsolved_contest_id - 1 == solved_contest_id):
-							# This problem appeared in both Div. 1 and Div. 2 rounds and has been solved in one of them
-							dummy_unsolved_problem_list.append(unsolved_problem)
-
-			# Calculating total unsolved problems
-			total_unsolved = len(unsolved_problem_list) - len(dummy_unsolved_problem_list)
-	
-			# Segregating unsolved problems by levels
-			unsolved_problem_by_index = {'A':{'r':[], 'u':[]}, 'B':{'r':[], 'u':[]}, 'C':{'r':[], 'u':[]}, 'D':{'r':[], 'u':[]}, 'E':{'r':[], 'u':[]}, 'F':{'r':[], 'u':[]},'G':{'r':[], 'u':[]}, 'H':{'r':[], 'u':[]}, 'I':{'r':[], 'u':[]}, 'J':{'r':[], 'u':[]}, 'K':{'r':[], 'u':[]}, 'L':{'r':[], 'u':[]}, 'M':{'r':[], 'u':[]}, 'N':{'r':[], 'u':[]}, 'O':{'r':[], 'u':[]}, 'P':{'r':[], 'u':[]}, 'R':{'r':[], 'u':[]}, 'S':{'r':[], 'u':[]}, 'T':{'r':[], 'u':[]}, 'U':{'r':[], 'u':[]}, 'V':{'r':[], 'u':[]}, 'W':{'r':[], 'u':[]}, 'X':{'r':[], 'u':[]}, 'Y':{'r':[], 'u':[]}, 'Z':{'r':[], 'u':[]}, '#':{'r':[], 'u':[]}}
-			unsolved_problem_by_rating = {'1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], '10':[], '11':[], '12':[], '13':[]}
-			for problem in unsolved_problem_list:
-				if problem not in dummy_unsolved_problem_list:
-					# Checking if it is not a dummy unsolved problem.
-					contestId = str(problem['contestId']) if 'contestId' in problem else -1
-					problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
-					index = str(problem['index'])
-					letter = index[0]
-					if not letter.isalpha():
-						letter = chr(int(index) + 64)
-					name = str(problem['name'])
-					rating = problem['rating'] if 'rating' in problem else INF
-					link = generate_problem_link(problemset_name, contestId, index)
-					if letter not in unsolved_problem_by_index:
-						letter = '#'
-					if rating == INF:  # Unrated Problem
-						unsolved_problem_by_index[letter]['u'].append([index, name, link, rating])
-					else:  # Rated Problem
-						unsolved_problem_by_index[letter]['r'].append([index, name, link, rating])
-
-					rating_category = get_rating_category(int(rating)) if 'rating' in problem else '13'
-					unsolved_problem_by_rating[rating_category].append([index, name, link, rating])
-			
-			# Creating final dictionary to pass to template
-			final_unsolved_by_index = {}
-			for index in unsolved_problem_by_index:
-				if len(unsolved_problem_by_index[index]['r']) + len(unsolved_problem_by_index[index]['u']) > 0:
-					if len(unsolved_problem_by_index[index]['r']) > 0:
-						unsolved_problem_by_index[index]['r'] = sorted(unsolved_problem_by_index[index]['r'], key = lambda rating: rating[3])
-					final_unsolved_by_index.update({index: unsolved_problem_by_index[index]})
-			final_unsolved_by_rating = {}
-			for rating_category in unsolved_problem_by_rating:
-				if len(unsolved_problem_by_rating[rating_category]) > 0:
-					unsolved_problem_by_rating[rating_category] = sorted(unsolved_problem_by_rating[rating_category], key = lambda rating: rating[3])
-					final_unsolved_by_rating.update({rating_category: unsolved_problem_by_rating[rating_category]})
-
-			unsolved_info = {
-				# Unsolved information to send to template.
-				'total_unsolved': total_unsolved,
-				'unsolved_problem_by_index': final_unsolved_by_index,
-				'unsolved_problem_by_rating': final_unsolved_by_rating,
-			}
+			unsolved_info = parse_problems(solved_problem_set, unsolved_problem_set)
 
 			# Fetching User Info
 			try:
 				r = requests.get('https://codeforces.com/api/user.info', params={'handles': handle}, timeout=10)
 			except requests.exceptions.ConnectTimeout:
-				flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'error')
+				flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
 				return render_template('home.html') 
 			except requests.exceptions.ReadTimeout:
-				flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
+				flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
+				return render_template('home.html') 
+			except requests.exceptions.ConnectionError:
+				flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
 				return render_template('home.html') 
 
 			try:
 				response_data = r.json()
 			except json.decoder.JSONDecodeError:
-				flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'error')
+				flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
 				return render_template('home.html') 
 			user_info_full = response_data['result'][0]
 			user_info = {
@@ -251,6 +259,7 @@ def home_view():
 			return render_template('home.html', status=status, user_info=user_info, unsolved_info=unsolved_info)
 		else:
 			comment = response_data['comment']
+			flash(comment, 'danger')
 			return render_template('home.html', status=status, comment=comment)
 	else:
 		return render_template('home.html') 
@@ -279,16 +288,19 @@ def team_mode():
 		try:
 			r = requests.get('https://codeforces.com/api/user.info', params=payload, timeout=10)
 		except requests.exceptions.ConnectTimeout:
-			flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'error')
+			flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
 			return render_template('team_mode.html')
 		except requests.exceptions.ReadTimeout:
-			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'error')
+			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
 			return render_template('team_mode.html')
+		except requests.exceptions.ConnectionError:
+			flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
+			return render_template('home.html') 
 
 		try:
 			response_data = r.json()
 		except json.decoder.JSONDecodeError:
-			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'error')
+			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
 			return render_template('team_mode.html') 
 		# print(response_data)
 		status = response_data['status']
@@ -309,12 +321,55 @@ def team_mode():
 					# 'max_color': get_title(int(user['maxRating']))[1] if 'maxRating' in user else "text-dark",
 					# 'organization': user['organization'] if 'organization' in user else "",
 				})
-			print(team_info)
-			flash('Connected to Codeforces Server.', 'success')
-			return render_template('team_mode.html', status=status, team_info=team_info)
+
+			# Problem Data
+			unsolved_problem_set = set([])
+			solved_problem_set = set([])
+			queued_problem_set = set([]) # Problems whose submission is still in queue.
+			for handle in processed_handles:
+				# flash(f"Fetching { handle }'s data.", 'info')
+				try:
+					r = requests.get('https://codeforces.com/api/user.status', params={'handle': handle}, timeout=10)
+				except requests.exceptions.ConnectTimeout:
+					flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
+					return render_template('home.html') 
+				except requests.exceptions.ReadTimeout:
+					flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
+					return render_template('home.html') 
+				except requests.exceptions.ConnectionError:
+					flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
+					return render_template('home.html') 
+
+				try:
+					response_data = r.json()
+				except json.decoder.JSONDecodeError:
+					flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
+					return render_template('home.html') 
+				status = response_data['status']
+				
+				if status == 'OK':
+					submissions = response_data['result']
+
+					# Segregating solved and unsolved problems
+					for submission in submissions:
+						verdict = submission['verdict'] if 'verdict' in submission else 'QUEUED'
+						problem = submission['problem']
+						if verdict == 'OK':
+							solved_problem_set.add(json.dumps(problem))
+						elif verdict == 'QUEUED':
+							queued_problem_set.add(json.dumps(problem))
+						else:
+							unsolved_problem_set.add(json.dumps(problem))
+				else:
+					comment = response_data['comment']
+					return render_template('team_mode.html', status=status, comment=comment)
+
+			unsolved_info = unsolved_info = parse_problems(solved_problem_set, unsolved_problem_set)
+			flash("Connected to Codeforces server. Scroll down to see results.", 'success')
+			return render_template('team_mode.html', status=status, team_info=team_info, unsolved_info=unsolved_info)
 		else:
 			comment = response_data['comment']
-			flash(comment, 'error')
+			flash(comment, 'danger')
 			return render_template('team_mode.html', status=status, comment=comment)
 		return render_template('team_mode.html')
 	else:
