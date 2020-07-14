@@ -279,11 +279,15 @@ def team_mode():
 			handle = str(handle).strip()
 			if handle:
 				processed_handles.append(handle)
-		if len(handles) > 5:
+		if len(processed_handles) > 5:
 			flash("Too many handles! You can enter maximum of 5 handles.", 'warning')
 			return render_template('team_mode.html')
+		if len(processed_handles) < 2:
+			flash("Enter atleast 2 handles. For single user go to Normal Mode!", 'warning')
+			return render_template('team_mode.html')
+			
 		payload = {'handles': str(';'.join(processed_handles))}
-		print(processed_handles)
+
 		# Fetching User Info
 		try:
 			r = requests.get('https://codeforces.com/api/user.info', params=payload, timeout=10)
@@ -302,7 +306,7 @@ def team_mode():
 		except json.decoder.JSONDecodeError:
 			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
 			return render_template('team_mode.html') 
-		# print(response_data)
+
 		status = response_data['status']
 
 		if status == 'OK':
@@ -311,15 +315,9 @@ def team_mode():
 			for user in team:
 				team_info.append({
 					'handle': user['handle'],
-					# 'first_name': user['firstName'] if 'firstName' in user else "",
-					# 'last_name': user['lastName'] if 'lastName' in user else "",
 					'rating': user['rating'] if 'rating' in user else 0,
 					'title': get_title(int(user['rating']))[0] if 'rating' in user else "Unrated",
 					'color': get_title(int(user['rating']))[1] if 'rating' in user else "text-dark",
-					# 'max_rating': user['maxRating'] if 'maxRating' in user else 0,
-					# 'max_title': get_title(int(user['maxRating']))[0] if 'maxRating' in user else "Unrated",
-					# 'max_color': get_title(int(user['maxRating']))[1] if 'maxRating' in user else "text-dark",
-					# 'organization': user['organization'] if 'organization' in user else "",
 				})
 
 			# Problem Data
@@ -327,7 +325,6 @@ def team_mode():
 			solved_problem_set = set([])
 			queued_problem_set = set([]) # Problems whose submission is still in queue.
 			for handle in processed_handles:
-				# flash(f"Fetching { handle }'s data.", 'info')
 				try:
 					r = requests.get('https://codeforces.com/api/user.status', params={'handle': handle}, timeout=10)
 				except requests.exceptions.ConnectTimeout:
@@ -364,7 +361,7 @@ def team_mode():
 					comment = response_data['comment']
 					return render_template('team_mode.html', status=status, comment=comment)
 
-			unsolved_info = unsolved_info = parse_problems(solved_problem_set, unsolved_problem_set)
+			unsolved_info = parse_problems(solved_problem_set, unsolved_problem_set)
 			flash("Connected to Codeforces server. Scroll down to see results.", 'success')
 			return render_template('team_mode.html', status=status, team_info=team_info, unsolved_info=unsolved_info)
 		else:

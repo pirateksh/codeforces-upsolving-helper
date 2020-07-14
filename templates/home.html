@@ -8,7 +8,25 @@
 			<section class="mx-4 my-3 py-3">
 				<!-- Messages Template Included -->
 				{% include 'messages.html' %}
-
+				<div id="connecting_info" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
+				    Welcome to <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"> <b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b>. Feel free to raise <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issues</a> / <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/pulls" class="alert-link">pull requests</a> regarding bugs / improvements.
+				    <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    	<span aria-hidden="true">&times;</span>
+				  	</button> -->
+				</div>
+				<div id="update" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
+				    <a class="alert-link">UPD (July 14, 2020):</a> <a target="_blank" href="{{ url_for('team_mode') }}" class="alert-link"><i class="fas fa-users"></i> Team Mode</a> now available. Learn more about it <a target="_blank" class="alert-link" href="{{ url_for('team_mode') }}#teamModeDescription">here</a>.
+				<!--     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    	<span aria-hidden="true">&times;</span>
+				  	</button> -->
+				</div>
+				<!-- Flashing Messages -->
+				<div class="alert alert-warning flash alert-dismissible fade show" role="alert">
+				    In case of <a class="alert-link">Internal Server Error</a>, try again after sometime. If it persists raise an <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issue</a> on github stating the <b>Codeforces Handle</b> you entered.
+				    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    	<span aria-hidden="true">&times;</span>
+				  	</button>
+				</div>
 				<!-- Form Card -->
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('home_view') }}">
