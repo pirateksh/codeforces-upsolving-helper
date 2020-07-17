@@ -77,6 +77,26 @@ def get_rating_category(rating):
 	return category
 
 
+def safeHitURL(url, payload, timeout, template):
+	try:
+		r = requests.get(url, params=payload, timeout=timeout)
+		try:
+			response_data = r.json()
+			return response_data
+		except json.decoder.JSONDecodeError:
+			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
+			return render_template(template) 
+	except requests.exceptions.ConnectTimeout:
+		flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
+		return render_template(template) 
+	except requests.exceptions.ReadTimeout:
+		flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
+		return render_template(template) 
+	except requests.exceptions.ConnectionError:
+		flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
+		return render_template(template)
+
+
 # def user_information(handles):
 # 	"""
 # 		Function to return relevant user information in form of dictionary.
@@ -175,30 +195,18 @@ def parse_problems(solved_problem_set, unsolved_problem_set):
 		'unsolved_problem_by_rating': final_unsolved_by_rating,
 	}
 
+HOME_TEMPLATE = 'home.html'
+TEAM_TEMPLATE = 'team_mode.html'
+
 @app.route("/", methods=['POST', 'GET']) 
 def home_view(): 
 
 	if request.method == 'POST':
 
 		handle = request.form['user_handle']
-
-		try:
-			r = requests.get('https://codeforces.com/api/user.status', params={'handle': handle}, timeout=10)
-		except requests.exceptions.ConnectTimeout:
-			flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
-			return render_template('home.html') 
-		except requests.exceptions.ReadTimeout:
-			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
-			return render_template('home.html') 
-		except requests.exceptions.ConnectionError:
-			flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
-			return render_template('home.html') 
-
-		try:
-			response_data = r.json()
-		except json.decoder.JSONDecodeError:
-			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
-			return render_template('home.html') 
+		url, payload, timeout = 'https://codeforces.com/api/user.status', {'handle': handle}, 10
+		response_data = safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE)
+		
 		status = response_data['status']
 
 		if status == 'OK':
@@ -224,23 +232,9 @@ def home_view():
 			unsolved_info = parse_problems(solved_problem_set, unsolved_problem_set)
 
 			# Fetching User Info
-			try:
-				r = requests.get('https://codeforces.com/api/user.info', params={'handles': handle}, timeout=10)
-			except requests.exceptions.ConnectTimeout:
-				flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
-				return render_template('home.html') 
-			except requests.exceptions.ReadTimeout:
-				flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
-				return render_template('home.html') 
-			except requests.exceptions.ConnectionError:
-				flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
-				return render_template('home.html') 
+			url, payload, timeout = 'https://codeforces.com/api/user.info', {'handles': handle}, 10
+			response_data = safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE)
 
-			try:
-				response_data = r.json()
-			except json.decoder.JSONDecodeError:
-				flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
-				return render_template('home.html') 
 			user_info_full = response_data['result'][0]
 			user_info = {
 				# User information to send to template.
@@ -286,26 +280,9 @@ def team_mode():
 			flash("Enter atleast 2 handles. For single user go to Normal Mode!", 'warning')
 			return render_template('team_mode.html')
 			
-		payload = {'handles': str(';'.join(processed_handles))}
-
 		# Fetching User Info
-		try:
-			r = requests.get('https://codeforces.com/api/user.info', params=payload, timeout=10)
-		except requests.exceptions.ConnectTimeout:
-			flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
-			return render_template('team_mode.html')
-		except requests.exceptions.ReadTimeout:
-			flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
-			return render_template('team_mode.html')
-		except requests.exceptions.ConnectionError:
-			flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
-			return render_template('home.html') 
-
-		try:
-			response_data = r.json()
-		except json.decoder.JSONDecodeError:
-			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
-			return render_template('team_mode.html') 
+		url, payload, timeout = 'https://codeforces.com/api/user.info', {'handles': str(';'.join(processed_handles))}, 10
+		response_data = safeHitURL(url=url, payload=payload, timeout=timeout, template=TEAM_TEMPLATE)
 
 		status = response_data['status']
 
@@ -325,23 +302,9 @@ def team_mode():
 			solved_problem_set = set([])
 			queued_problem_set = set([]) # Problems whose submission is still in queue.
 			for handle in processed_handles:
-				try:
-					r = requests.get('https://codeforces.com/api/user.status', params={'handle': handle}, timeout=10)
-				except requests.exceptions.ConnectTimeout:
-					flash("ConnectTimeout: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
-					return render_template('home.html') 
-				except requests.exceptions.ReadTimeout:
-					flash("ReadTimeout: Connected to Codeforces server but it took too long to respond. Try Again!", 'danger')
-					return render_template('home.html') 
-				except requests.exceptions.ConnectionError:
-					flash("ConnectionError: Could not connect to Codeforces server. Check your Internet Connection and Try Again!", 'danger')
-					return render_template('home.html') 
-
-				try:
-					response_data = r.json()
-				except json.decoder.JSONDecodeError:
-					flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
-					return render_template('home.html') 
+				url, payload, timeout = 'https://codeforces.com/api/user.status', {'handle': handle}, 10
+				response_data = safeHitURL(url=url, payload=payload, timeout=timeout, template=TEAM_TEMPLATE)
+				 
 				status = response_data['status']
 				
 				if status == 'OK':
