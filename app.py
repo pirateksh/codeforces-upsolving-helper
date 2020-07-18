@@ -64,8 +64,9 @@ def home_view():
 				'organization': user_info_full['organization'] if 'organization' in user_info_full else "",
 			}
 			user_rating = user_info_full['rating'] if 'rating' in user_info_full else 0
+			max_user_rating = user_info_full['maxRating'] if 'maxRating' in user_info_full else 0
 			print(f"Time Taken before recommender = {time.process_time() - start}")
-			# recommender([(handle, user_rating)], unsolved_info['final_unsolved_problem_list'], unsolved_info['final_solved_problem_list'])
+			# recommender([(handle, user_rating, max_user_rating)], unsolved_info['final_unsolved_problem_list'], unsolved_info['final_solved_problem_list'])
 			print(f"Time Taken final = {time.process_time() - start}")
 			flash("Connected to Codeforces server. Scroll down to see results.", 'success')
 			return render_template('home.html', status=status, user_info=user_info, unsolved_info=unsolved_info)

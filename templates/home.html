@@ -7,6 +7,13 @@
 		<div class="container">
 			<section class="mx-4 my-3 py-3">
 				<!-- Messages Template Included -->
+				<div class="d-flex justify-content-end">
+					<a href="{{ url_for('team_mode') }}">
+						<button class="btn btn-info">
+							 Switch to <i class="fas fa-users"></i> Team Mode
+						</button>
+					</a>
+				</div>
 				{% include 'messages.html' %}
 				<div id="connecting_info" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
 				    Welcome to <img src="{{ url_for('static', filename='images/favicon.png') }}" height="30" class="d-inline-block align-top" alt="mdb logo"> <b> <span class="text-warning">Codeforces</span> <span class="text-primary">Upsolving</span> <span class="text-danger">Helper</span></b>. Feel free to raise <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issues</a> / <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/pulls" class="alert-link">pull requests</a> regarding bugs / improvements.
@@ -14,12 +21,19 @@
 				    	<span aria-hidden="true">&times;</span>
 				  	</button> -->
 				</div>
-				<div id="update" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
-				    <a class="alert-link">UPD (July 14, 2020):</a> <a target="_blank" href="{{ url_for('team_mode') }}" class="alert-link"><i class="fas fa-users"></i> Team Mode</a> now available. Learn more about it <a target="_blank" class="alert-link" href="{{ url_for('team_mode') }}#teamModeDescription">here</a>.
-				<!--     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<div id="update" class="text-center alert alert-success flash alert-dismissible fade show" role="alert">
+				    <a class="alert-link">Upcoming:</a> <b><a class="alert-link">Unattempted Problem Recommender</a> (from previous contests) for Upsolving</b>. Stay Tuned! <i class="fas fa-business-time"></i>.
+				    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				    	<span aria-hidden="true">&times;</span>
-				  	</button> -->
+				  	</button>
 				</div>
+				<div id="update" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
+				    <a class="alert-link">UPD (July 14, 2020):</a> <a href="{{ url_for('team_mode') }}" class="alert-link"><i class="fas fa-users"></i> Team Mode</a> now available. Learn more about it <a class="alert-link" href="{{ url_for('team_mode') }}#teamModeDescription">here</a>.
+				    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    	<span aria-hidden="true">&times;</span>
+				  	</button>
+				</div>
+				
 				<!-- Flashing Messages -->
 				<div class="alert alert-warning flash alert-dismissible fade show" role="alert">
 				    In case of <a class="alert-link">Internal Server Error</a>, try again after sometime. If it persists raise an <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issue</a> on github stating the <b>Codeforces Handle</b> you entered.
