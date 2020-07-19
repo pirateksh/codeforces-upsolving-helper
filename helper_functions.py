@@ -276,10 +276,8 @@ def recommender(users, unsolved_problem_list, solved_problem_list):
 					if problem not in attempted_contest_dict[int(contestId)]:
 						unsolved_contest_dict[int(contestId)].append(problem)
 
-	# recommended_problems = {'0':[], '1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[]}
 	recommended_problems = {'1':[], '2':[], '3':[], '4':[], '5':[], '6':[]}
 	for contestId in unsolved_contest_dict:
-		# unsolved_contest_dict[contestId] = sorted(unsolved_contest_dict[contestId], key = lambda prblm: prblm['rating'])
 		for problem in unsolved_contest_dict[contestId]:
 			if 'rating' in problem:
 				category = recommender_category(final_rating, int(problem['rating']))
@@ -296,23 +294,24 @@ def recommender(users, unsolved_problem_list, solved_problem_list):
 	
 	for category in recommended_problems:
 		recommended_problems[category] = sorted(recommended_problems[category], key = lambda prblm: prblm[3])
-	for category in recommended_problems:
-		if len(recommended_problems[category]) > 0:
-			if category == '1':
-				print(f"Level Easy:")
-			elif category == '2':
-				print(f"Level Medium:")
-			elif category == '3':
-				print(f"Level Hard:")
-			elif category == '4':
-				print(f"Level Extreme:")
-			elif category == '5':
-				print(f"Level Impossible:")
-			else: 
-				print(f"Level Unrated:")
+	return json.dumps(recommended_problems)
+	# for category in recommended_problems:
+	# 	if len(recommended_problems[category]) > 0:
+	# 		if category == '1':
+	# 			print(f"Level Easy:")
+	# 		elif category == '2':
+	# 			print(f"Level Medium:")
+	# 		elif category == '3':
+	# 			print(f"Level Hard:")
+	# 		elif category == '4':
+	# 			print(f"Level Extreme:")
+	# 		elif category == '5':
+	# 			print(f"Level Impossible:")
+	# 		else: 
+	# 			print(f"Level Unrated:")
 			
-			for problems in recommended_problems[category]:
-				print(f"\t{problems[0]}. {problems[1]} ({problems[2]}) ({problems[3]})")
+	# 		for problems in recommended_problems[category]:
+	# 			print(f"\t{problems[0]}. {problems[1]} ({problems[2]}) ({problems[3]})")
 
 def recommender_category(user_rating, problem_rating):
 	category = ''

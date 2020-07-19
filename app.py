@@ -66,10 +66,10 @@ def home_view():
 			user_rating = user_info_full['rating'] if 'rating' in user_info_full else 0
 			max_user_rating = user_info_full['maxRating'] if 'maxRating' in user_info_full else 0
 			print(f"Time Taken before recommender = {time.process_time() - start}")
-			# recommender([(handle, user_rating, max_user_rating)], unsolved_info['final_unsolved_problem_list'], unsolved_info['final_solved_problem_list'])
+			recommended_problems = json.loads(recommender([(handle, user_rating, max_user_rating)], unsolved_info['final_unsolved_problem_list'], unsolved_info['final_solved_problem_list']))
 			print(f"Time Taken final = {time.process_time() - start}")
 			flash("Connected to Codeforces server. Scroll down to see results.", 'success')
-			return render_template('home.html', status=status, user_info=user_info, unsolved_info=unsolved_info)
+			return render_template('home.html', status=status, user_info=user_info, unsolved_info=unsolved_info, recommended_problems=recommended_problems)
 		else:
 			comment = response_data['comment']
 			flash(comment, 'danger')
@@ -108,7 +108,13 @@ def team_mode():
 		if status == 'OK':
 			team = response_data['result']
 			team_info = []
+			recommender_info = []
 			for user in team:
+				recommender_info.append((
+					user['handle'],
+					user['rating'] if 'rating' in user else 0,
+					user['maxRating'] if 'maxRating' in user else 0,
+				))
 				team_info.append({
 					'handle': user['handle'],
 					'rating': user['rating'] if 'rating' in user else 0,
@@ -144,8 +150,10 @@ def team_mode():
 					return render_template('team_mode.html', status=status, comment=comment)
 
 			unsolved_info = parse_problems(solved_problem_set, unsolved_problem_set)
+			
+			recommended_problems = json.loads(recommender(recommender_info, unsolved_info['final_unsolved_problem_list'], unsolved_info['final_solved_problem_list']))
 			flash("Connected to Codeforces server. Scroll down to see results.", 'success')
-			return render_template('team_mode.html', status=status, team_info=team_info, unsolved_info=unsolved_info)
+			return render_template('team_mode.html', status=status, team_info=team_info, unsolved_info=unsolved_info, recommended_problems=recommended_problems)
 		else:
 			comment = response_data['comment']
 			flash(comment, 'danger')

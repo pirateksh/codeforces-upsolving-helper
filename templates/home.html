@@ -5,7 +5,7 @@
 {% block content %}
 	<main>
 		<div class="container">
-			<section class="mx-4 my-3 py-3">
+			<section>
 				<!-- Messages Template Included -->
 				<div class="d-flex justify-content-end">
 					<a href="{{ url_for('team_mode') }}">
@@ -21,26 +21,26 @@
 				    	<span aria-hidden="true">&times;</span>
 				  	</button> -->
 				</div>
-				<div id="update" class="text-center alert alert-success flash alert-dismissible fade show" role="alert">
+		<!-- 		<div id="update" class="text-center alert alert-success flash alert-dismissible fade show" role="alert">
 				    <a class="alert-link">Upcoming:</a> <b><a class="alert-link">Unattempted Problem Recommender</a> (from previous contests) for Upsolving</b>. Stay Tuned! <i class="fas fa-business-time"></i>.
 				    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				    	<span aria-hidden="true">&times;</span>
 				  	</button>
-				</div>
+				</div> -->
 				<div id="update" class="text-center alert alert-info flash alert-dismissible fade show" role="alert">
-				    <a class="alert-link">UPD (July 14, 2020):</a> <a href="{{ url_for('team_mode') }}" class="alert-link"><i class="fas fa-users"></i> Team Mode</a> now available. Learn more about it <a class="alert-link" href="{{ url_for('team_mode') }}#teamModeDescription">here</a>.
+				    <a class="alert-link">UPD (July 19, 2020):</a> Try new <a class="alert-link">Unattempted Problem Recommender</a> by Entering your <a class="alert-link">handle</a> and then selecting <a class="alert-link"><i class="fas fa-registered"></i> Recommended Problems</a>.
 				    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				    	<span aria-hidden="true">&times;</span>
 				  	</button>
 				</div>
 				
 				<!-- Flashing Messages -->
-				<div class="alert alert-warning flash alert-dismissible fade show" role="alert">
+			<!-- 	<div class="alert alert-warning flash alert-dismissible fade show" role="alert">
 				    In case of <a class="alert-link">Internal Server Error</a>, try again after sometime. If it persists raise an <a target="_blank" href="https://github.com/pirateksh/codeforces-upsolving-helper/issues" class="alert-link">issue</a> on github stating the <b>Codeforces Handle</b> you entered.
 				    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 				    	<span aria-hidden="true">&times;</span>
 				  	</button>
-				</div>
+				</div> -->
 				<!-- Form Card -->
 				<div class="card text-center">
 					<form method="post" action="{{ url_for('home_view') }}">
@@ -86,9 +86,9 @@
 										{% if user_info.last_name %} {{ user_info.last_name }} {% endif %}
 									</h4>
 									<h5>{% if user_info.organization %} Organization: {{ user_info.organization }} {% endif %}</h5>
-									<h5>Total Unsolved Problems: {{ unsolved_info.total_unsolved }}</h5>
+									
 									{% if unsolved_info.total_unsolved > 0 %}
-										Scroll further down to see unsolved Problems. 
+										Scroll further down to see Unsolved or Recommended Problems. 
 									{% else %}
 										<h5 class="text-success">Wohooo! You have solved each and every Problem that you ever touched on Codeforces.</h5> 
 										<h4 class="text-danger">OR</h4> 
@@ -101,7 +101,9 @@
 							</div>
 						</div>
 						<br/>
+
 						{% include 'problems.html' %}
+						
 					{% else %}
 						<div class="card text-center">
 							<div class="card-header">
