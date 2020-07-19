@@ -1,4 +1,5 @@
 import requests, json, time, math
+from flask import Flask, render_template, request, flash, url_for
 from problems import PROBLEM_RESPONSE
 
 INF = 10000
@@ -357,12 +358,12 @@ def recommender_category(user_rating, problem_rating):
 
 def allProblems():
 	pass
-# 	url = 'https://codeforces.com/api/problemset.problems'
-# 	response_data = json.loads(safeHitURL(url=url))
-# 	status = response_data['status']
-# 	if status == 'OK':
-# 		return json.dumps(response_data['result'])
-# 	else:
-# 		comment = response_data['comment']
-# 		flash(comment, 'danger')
-# 		return render_template('home.html', status=status, comment=comment)
+	# url = 'https://codeforces.com/api/problemset.problems'
+	# response_data = json.loads(safeHitURL(url=url))
+	# status = response_data['status']
+	# if status == 'OK':
+	# 	return json.dumps(response_data['result'])
+	# else:
+	# 	comment = response_data['comment']
+	# 	flash(comment, 'danger')
+	# 	return render_template('home.html', status=status, comment=comment)
