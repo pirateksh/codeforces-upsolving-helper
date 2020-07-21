@@ -19,8 +19,11 @@ def home_view():
 
 		handle = request.form['user_handle']
 		url, payload, timeout = 'https://codeforces.com/api/user.status', {'handle': handle}, 10
-		response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE))
-		
+		try:
+			response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE))
+		except json.decoder.JSONDecodeError:
+			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
+			return render_template(HOME_TEMPLATE)
 		status = response_data['status']
 
 		if status == 'OK':
@@ -47,8 +50,11 @@ def home_view():
 
 			# Fetching User Info
 			url, payload, timeout = 'https://codeforces.com/api/user.info', {'handles': handle}, 10
-			response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE))
-
+			try:
+				response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE))
+			except json.decoder.JSONDecodeError:
+				flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
+				return render_template(HOME_TEMPLATE)
 			user_info_full = response_data['result'][0]
 			user_info = {
 				# User information to send to template.
@@ -101,8 +107,11 @@ def team_mode():
 			
 		# Fetching User Info
 		url, payload, timeout = 'https://codeforces.com/api/user.info', {'handles': str(';'.join(processed_handles))}, 10
-		response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=TEAM_TEMPLATE))
-
+		try:
+			response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=TEAM_TEMPLATE))
+		except json.decoder.JSONDecodeError:
+			flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
+			return render_template(TEAM_TEMPLATE)
 		status = response_data['status']
 
 		if status == 'OK':
@@ -128,8 +137,11 @@ def team_mode():
 			queued_problem_set = set([]) # Problems whose submission is still in queue.
 			for handle in processed_handles:
 				url, payload, timeout = 'https://codeforces.com/api/user.status', {'handle': handle}, 10
-				response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=TEAM_TEMPLATE))
-				 
+				try:
+					response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=TEAM_TEMPLATE))
+				except json.decoder.JSONDecodeError:
+					flash("Internal Server Error: Could not fetch data. Probably Codeforces Server is down. Try again!", 'danger')
+					return render_template(TEAM_TEMPLATE)
 				status = response_data['status']
 				
 				if status == 'OK':

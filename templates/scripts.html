@@ -45,14 +45,10 @@
             if (document.getElementById("radioByIndex").checked){
                 document.getElementById('byRating').style.display = 'none';
                 document.getElementById('byIndex').style.display = 'initial';
-                // fade(document.getElementById('byRating'));
-                // unfade(document.getElementById('byIndex'));    
                 document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-sort-alpha-down"></i> Index (A, B, C and so on)</a>.</div>'
             } else if (document.getElementById("radioByRating").checked){
                 document.getElementById('byIndex').style.display = 'none';
                 document.getElementById('byRating').style.display = 'initial';
-                // fade(document.getElementById('byIndex'));
-                // unfade(document.getElementById('byRating'));
                 document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-secondary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-chart-line"></i> Rating (Less than 1000, Between 1000 and 1200, and so on)</a>.</div>'
             }
         }
@@ -61,15 +57,21 @@
             if (document.getElementById("radioUnsolved").checked){
                 document.getElementById('idUnattempted').style.display = 'none';
                 document.getElementById('idUnsolved').style.display = 'initial';
-                // fade(document.getElementById('idUnattempted'));
-                // unfade(document.getElementById('idUnsolved'));    
-                // document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-sort-alpha-down"></i> Index (A, B, C and so on)</a>.</div>'
             } else if (document.getElementById("radioUnattempted").checked){
                 document.getElementById('idUnsolved').style.display = 'none';
                 document.getElementById('idUnattempted').style.display = 'initial';
-                // fade(document.getElementById('idUnsolved'));
-                // unfade(document.getElementById('idUnattempted'));
-                // document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-secondary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-chart-line"></i> Rating (Less than 1000, Between 1000 and 1200, and so on)</a>.</div>'
+            }
+        }
+
+        function toggleRecommendedType(argument) {
+            if (document.getElementById("radioByContest").checked){
+                document.getElementById('idByProblemset').style.display = 'none';
+                document.getElementById('idByContest').style.display = 'initial';
+                document.getElementById('recommendedInfo').innerHTML = '<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert"> These are Unattempted Problems from your <a class="alert-link"><i class="fab fa-cuttlefish"></i> Past Contests</a>.</div>'
+            } else if (document.getElementById("radioByProblemset").checked){
+                document.getElementById('idByContest').style.display = 'none';
+                document.getElementById('idByProblemset').style.display = 'initial';
+                document.getElementById('recommendedInfo').innerHTML = '<div class="text-center alert alert-secondary flash alert-dismissible fade show" role="alert"> These are <a class="alert-link">randomly chosen</a> Unattempted Problems from <a class="alert-link"><i class="fab fa-autoprefixer"></i> All Problemset.</div>'
             }
         }
 

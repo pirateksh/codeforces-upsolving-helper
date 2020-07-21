@@ -1,4 +1,4 @@
-import requests, json, time, math
+import requests, json, time, math, random
 from flask import Flask, render_template, request, flash, url_for
 from problems import PROBLEM_RESPONSE
 
@@ -261,23 +261,19 @@ def recommender(users, unsolved_problem_list, solved_problem_list):
 	all_problems = PROBLEM_RESPONSE['problems']
 	problems_statistics = PROBLEM_RESPONSE['problemStatistics']
 
+
 	# for problem, stats in zip(all_problems, problems_statistics):
 	for problem in all_problems:
+		# Separating for Problem Recommender (past Contests)
 		if 'contestId' in problem:
 			contestId = problem['contestId']
 			# solvedCount = stats['solvedCount']
-
-			# This chnges the dictioanry itself
-			# if 'rating' in problem:
-			# 	problem['rating'] = solvedCount
-			# else:
-			# 	problem.update({'rating': solvedCount})
 			if int(contestId) in solved_contest_dict:
 				if problem not in solved_contest_dict[int(contestId)]:
 					if problem not in attempted_contest_dict[int(contestId)]:
 						unsolved_contest_dict[int(contestId)].append(problem)
 
-	recommended_problems = {'1':[], '2':[], '3':[], '4':[], '5':[], '6':[]}
+	recommended_problems_contest = {'1':[], '2':[], '3':[], '4':[], '5':[], '6':[]}
 	for contestId in unsolved_contest_dict:
 		for problem in unsolved_contest_dict[contestId]:
 			if 'rating' in problem:
@@ -290,48 +286,47 @@ def recommender(users, unsolved_problem_list, solved_problem_list):
 			name = str(problem['name'])
 			rating = problem['rating'] if 'rating' in problem else INF
 			link = generate_problem_link(problemset_name, contestId, index)
-			if len(recommended_problems[category]) < 10:
-				recommended_problems[category].append([index, name, link, rating])
+			if len(recommended_problems_contest[category]) < 10:
+				recommended_problems_contest[category].append([index, name, link, rating])
 	
-	for category in recommended_problems:
-		recommended_problems[category] = sorted(recommended_problems[category], key = lambda prblm: prblm[3])
-	return json.dumps(recommended_problems)
-	# for category in recommended_problems:
-	# 	if len(recommended_problems[category]) > 0:
-	# 		if category == '1':
-	# 			print(f"Level Easy:")
-	# 		elif category == '2':
-	# 			print(f"Level Medium:")
-	# 		elif category == '3':
-	# 			print(f"Level Hard:")
-	# 		elif category == '4':
-	# 			print(f"Level Extreme:")
-	# 		elif category == '5':
-	# 			print(f"Level Impossible:")
-	# 		else: 
-	# 			print(f"Level Unrated:")
-			
-	# 		for problems in recommended_problems[category]:
-	# 			print(f"\t{problems[0]}. {problems[1]} ({problems[2]}) ({problems[3]})")
+	for category in recommended_problems_contest:
+		recommended_problems_contest[category] = sorted(recommended_problems_contest[category], key = lambda prblm: prblm[3])
+	
+	# Problem Recommender All Problems
+	temp_recommended_problems_all = {'1':[], '2':[], '3':[], '4':[], '5':[]}
+	for problem in all_problems:
+		if problem not in solved_problem_list:
+			if problem not in unsolved_problem_list:
+				if 'rating' in problem:
+					category = recommender_category(final_rating, int(problem['rating']))
+					contestId = str(problem['contestId']) if 'contestId' in problem else -1
+					problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
+					index = str(problem['index'])
+					name = str(problem['name'])
+					rating = problem['rating'] if 'rating' in problem else INF
+					link = generate_problem_link(problemset_name, contestId, index)
+					temp_recommended_problems_all[category].append([index, name, link, rating])
+
+	# Final List of Random Problems from Complete Problemset.
+	recommended_problems_all = {'1':[], '2':[], '3':[], '4':[], '5':[]}
+	for category in temp_recommended_problems_all:
+		total = len(temp_recommended_problems_all[category])
+		for i in range(0,10):
+			random_problem = random.randint(0, total - 1)
+			if temp_recommended_problems_all[category][random_problem] not in recommended_problems_all[category]:
+				recommended_problems_all[category].append(temp_recommended_problems_all[category][random_problem])
+	
+	for category in recommended_problems_all:
+		recommended_problems_all[category] = sorted(recommended_problems_all[category], key = lambda prblm: prblm[3])
+	
+	return json.dumps({
+		'rp_contest': recommended_problems_contest,
+		'rp_all': recommended_problems_all,
+	})
+
 
 def recommender_category(user_rating, problem_rating):
 	category = ''
-	# if problem_rating >= 30000:
-	# 	category = '0'
-	# if problem_rating >= 10000:
-	# 	category = '1'
-	# elif problem_rating >= 7000:
-	# 	category = '2'
-	# elif problem_rating >= 4500:
-	# 	category = '3'
-	# elif problem_rating >= 2000:
-	# 	category = '4'
-	# elif problem_rating >= 1000:
-	# 	category = '5'
-	# elif problem_rating >= 300:
-	# 	category = '6'
-	# elif problem_rating >= 10:
-	# 	category = '7'
 	if user_rating >= 2000:
 		if problem_rating <= user_rating - 300:
 			category = '1'
