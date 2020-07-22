@@ -5,88 +5,111 @@
 <script type="text/javascript" src="{{ url_for('static', filename='Bootstrap/js/bootstrap.min.js') }}"></script>
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='Bootstrap/js/mdb.min.js') }}"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+
 <!-- Initializations -->
-
 <script type="text/javascript">
-        // Tooltips Initialization
-        $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-        })
-
-        // https://stackoverflow.com/a/6121270/11671368
-        function fade(element) {
-            var op = 1;  // initial opacity
-            var timer = setInterval(function () {
-                if (op <= 0.1){
-                    clearInterval(timer);
-                    element.style.display = 'none';
-                }
-                element.style.opacity = op;
-                element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-                op -= op * 0.1;
-            }, 50);
-        }
-
-        // https://stackoverflow.com/a/6121270/11671368
-        function unfade(element) {
-            var op = 0.1;  // initial opacity
-            element.style.display = 'block';
-            var timer = setInterval(function () {
-                if (op >= 1){
-                    clearInterval(timer);
-                }
-                element.style.opacity = op;
-                element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-                op += op * 0.1;
-            }, 10);
-        }
-
-        function toggleSegregation(argument) {
-            if (document.getElementById("radioByIndex").checked){
-                document.getElementById('byRating').style.display = 'none';
-                document.getElementById('byIndex').style.display = 'initial';
-                document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-sort-alpha-down"></i> Index (A, B, C and so on)</a>.</div>'
-            } else if (document.getElementById("radioByRating").checked){
-                document.getElementById('byIndex').style.display = 'none';
-                document.getElementById('byRating').style.display = 'initial';
-                document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-secondary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-chart-line"></i> Rating (Less than 1000, Between 1000 and 1200, and so on)</a>.</div>'
+    // Tooltips Initialization
+    $(function () {
+    $('[data-toggle="tooltip"]').tooltip('enable');
+    });
+    /*
+    // https://stackoverflow.com/a/6121270/11671368
+    function fade(element) {
+        var op = 1;  // initial opacity
+        var timer = setInterval(function () {
+            if (op <= 0.1){
+                clearInterval(timer);
+                element.style.display = 'none';
             }
-        }
+            element.style.opacity = op;
+            element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+            op -= op * 0.1;
+        }, 50);
+    }
 
-        function toggleProblemType(argument) {
-            if (document.getElementById("radioUnsolved").checked){
-                document.getElementById('idUnattempted').style.display = 'none';
-                document.getElementById('idUnsolved').style.display = 'initial';
-            } else if (document.getElementById("radioUnattempted").checked){
-                document.getElementById('idUnsolved').style.display = 'none';
-                document.getElementById('idUnattempted').style.display = 'initial';
+    // https://stackoverflow.com/a/6121270/11671368
+    function unfade(element) {
+        var op = 0.1;  // initial opacity
+        element.style.display = 'block';
+        var timer = setInterval(function () {
+            if (op >= 1){
+                clearInterval(timer);
             }
-        }
+            element.style.opacity = op;
+            element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+            op += op * 0.1;
+        }, 10);
+    }*/
 
-        function toggleRecommendedType(argument) {
-            if (document.getElementById("radioByContest").checked){
-                document.getElementById('idByProblemset').style.display = 'none';
-                document.getElementById('idByContest').style.display = 'initial';
-                document.getElementById('recommendedInfo').innerHTML = '<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert"> These are Unattempted Problems from your <a class="alert-link"><i class="fab fa-cuttlefish"></i> Past Contests</a>.</div>'
-            } else if (document.getElementById("radioByProblemset").checked){
-                document.getElementById('idByContest').style.display = 'none';
-                document.getElementById('idByProblemset').style.display = 'initial';
-                document.getElementById('recommendedInfo').innerHTML = '<div class="text-center alert alert-secondary flash alert-dismissible fade show" role="alert"> These are <a class="alert-link">randomly chosen</a> Unattempted Problems from <a class="alert-link"><i class="fab fa-autoprefixer"></i> All Problemset.</div>'
-            }
+    function toggleSegregation(argument) {
+        if (document.getElementById("radioByIndex").checked){
+            document.getElementById('byRating').style.display = 'none';
+            document.getElementById('byIndex').style.display = 'initial';
+            document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-sort-alpha-down"></i> Index (A, B, C and so on)</a>.</div>'
+        } else if (document.getElementById("radioByRating").checked){
+            document.getElementById('byIndex').style.display = 'none';
+            document.getElementById('byRating').style.display = 'initial';
+            document.getElementById('segregationInfo').innerHTML = '<div class="text-center alert alert-secondary flash alert-dismissible fade show" role="alert">Currently Problems are segregated based on <a class="alert-link"> <i class="fas fa-chart-line"></i> Rating (Less than 1000, Between 1000 and 1200, and so on)</a>.</div>'
         }
+    }
 
-        function f(e) {
-            if(e === 'home') {
-                document.getElementById('connecting_info').innerHTML = '<div class="d-flex align-items-center"> <strong>Connecting...</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>';
-            } else if(e === 'team_mode') {
-                document.getElementById('connecting_info').innerHTML = '<div class="d-flex align-items-center"> <strong>Connecting...This might take a little longer than Normal Mode.</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>';
-            }
-            fade(document.getElementById('connected_success'));
-            fade(document.getElementById('connected_danger'));
+    function toggleProblemType(argument) {
+        if (document.getElementById("radioUnsolved").checked){
+            document.getElementById('idUnattempted').style.display = 'none';
+            document.getElementById('idUnsolved').style.display = 'initial';
+        } else if (document.getElementById("radioUnattempted").checked){
+            document.getElementById('idUnsolved').style.display = 'none';
+            document.getElementById('idUnattempted').style.display = 'initial';
         }
+    }
 
-        function dismiss(e) {
-            fade(document.getElementById(e));
+    function toggleRecommendedType(argument) {
+        if (document.getElementById("radioByContest").checked){
+            document.getElementById('idByProblemset').style.display = 'none';
+            document.getElementById('idByContest').style.display = 'initial';
+            document.getElementById('recommendedInfo').innerHTML = '<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert"> These are Unattempted Problems from your <a class="alert-link"><i class="fab fa-cuttlefish"></i> Past Contests</a>.</div>'
+        } else if (document.getElementById("radioByProblemset").checked){
+            document.getElementById('idByContest').style.display = 'none';
+            document.getElementById('idByProblemset').style.display = 'initial';
+            document.getElementById('recommendedInfo').innerHTML = '<div class="text-center alert alert-secondary flash alert-dismissible fade show" role="alert"> These are <a class="alert-link">randomly chosen</a> Unattempted Problems from <a class="alert-link"><i class="fab fa-autoprefixer"></i> All Problemset.</div>'
         }
-    </script>
+    }
+
+    function f(e) {
+        if(e === 'home') {
+            document.getElementById('connecting_info').innerHTML = '<div class="d-flex align-items-center"> <strong>Connecting...</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>';
+        } else if(e === 'team_mode') {
+            document.getElementById('connecting_info').innerHTML = '<div class="d-flex align-items-center"> <strong>Connecting...This might take a little longer than Normal Mode.</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>';
+        }
+        document.getElementById('connected_success').style.display = 'none';
+        document.getElementById('connected_danger').style.display = 'none';
+    }
+
+    function dismiss(e) {
+        document.getElementById(e).style.display = 'none';
+    }
+</script>
+
+<!-- AJAX Calls -->
+<script>/*
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    $('.idRecommendedByContestPrevious').click(function (e) {
+        let _this = $(this);
+        let url = `http://127.0.0.1:5000/previous/`;
+        console.log(`Previous is clicked for category ${_this.attr('category')} for URL ${url}`);
+        $.getJSON(`${url}`, {}, function(data) {
+            console.log(data.result);
+        });
+        return false;
+    });
+
+    $('.idRecommendedByContestNext').click(function (e) {
+        let _this = $(this);
+        console.log(`Next is clicked for category ${_this.attr('category')}`);
+    });*/
+</script>
+<!-- AJAX Calls Ends -->
 
