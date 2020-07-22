@@ -1,7 +1,7 @@
 import requests, json, time
 from flask import Flask, render_template, request, flash, url_for
 from helper_functions import generate_problem_link, get_title, get_rating_category, \
-                             safeHitURL, parse_problems, recommender, allProblems
+                             safeHitURL, parse_problems, recommender
   
 app = Flask(__name__) 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
