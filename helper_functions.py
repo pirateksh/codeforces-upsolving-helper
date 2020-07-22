@@ -330,10 +330,11 @@ def recommender(users, unsolved_problem_list, solved_problem_list):
 	recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
 	for category in temp_recommended_problems_all:
 		total = len(temp_recommended_problems_all[category])
-		for i in range(0, 10):
-			random_problem = random.randint(0, total - 1)
-			if temp_recommended_problems_all[category][random_problem] not in recommended_problems_all[category]:
-				recommended_problems_all[category].append(temp_recommended_problems_all[category][random_problem])
+		if total != 0:
+			for i in range(0, 10):
+				random_problem = random.randint(0, total - 1)
+				if temp_recommended_problems_all[category][random_problem] not in recommended_problems_all[category]:
+					recommended_problems_all[category].append(temp_recommended_problems_all[category][random_problem])
 
 	for category in recommended_problems_all:
 		recommended_problems_all[category] = sorted(recommended_problems_all[category], key=lambda prblm: prblm[3])
