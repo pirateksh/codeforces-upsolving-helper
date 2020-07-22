@@ -309,22 +309,25 @@ def recommender(users, unsolved_problem_list, solved_problem_list):
 		recommended_problems_contest[category] = sorted(recommended_problems_contest[category], key=lambda prblm: prblm[3])
 
 	# Problem Recommender All Problems
-	temp_recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': []}
+	temp_recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
+
 	for problem in all_problems:
 		if problem not in solved_problem_list:
 			if problem not in unsolved_problem_list:
 				if 'rating' in problem:
 					category = recommender_category(final_rating, int(problem['rating']))
-					contestId = str(problem['contestId']) if 'contestId' in problem else -1
-					problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
-					index = str(problem['index'])
-					name = str(problem['name'])
-					rating = problem['rating'] if 'rating' in problem else INF
-					link = generate_problem_link(problemset_name, contestId, index)
-					temp_recommended_problems_all[category].append([index, name, link, rating])
+				else:
+					category = '6'
+				contestId = str(problem['contestId']) if 'contestId' in problem else -1
+				problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
+				index = str(problem['index'])
+				name = str(problem['name'])
+				rating = problem['rating'] if 'rating' in problem else INF
+				link = generate_problem_link(problemset_name, contestId, index)
+				temp_recommended_problems_all[category].append([index, name, link, rating])
 
 	# Final List of Random Problems from Complete Problemset.
-	recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': []}
+	recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
 	for category in temp_recommended_problems_all:
 		total = len(temp_recommended_problems_all[category])
 		for i in range(0, 10):

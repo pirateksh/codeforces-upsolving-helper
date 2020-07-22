@@ -164,7 +164,7 @@
 			<strong><i class="fas fa-registered"></i> Recommended Problems</strong>
 		</div>
 		<div class="card-body">
-			<p>Problems will be classified into <b class="text-info">atmost 5 categories</b> namely - <span class="light-green-text accent-2 h6"><i class="fas fa-coffee"></i> Easy</span> , <span class="yellow-text lighten-1 h6"><i class="fas fa-football-ball"></i> Medium</span> , <span class="amber-text darken-3 h6"><i class="fas fa-align-justify"></i> Hard</span> , <span class="deep-orange-text h6"><i class="fas fa-chart-line"></i> Extreme</span> and <span class="red-text h6"><i class="fas fa-exclamation-triangle"></i> Impossible</span>.</p> 
+			<p>Problems will be classified into <b class="text-info">atmost 5 categories</b> namely - <span class="light-green-text accent-2 h6"><i class="fas fa-football-ball"></i> Easy</span> , <span class="yellow-text lighten-1 h6"><i class="fas fa-align-justify"></i>  Medium</span> , <span class="amber-text darken-3 h6"><i class="fas fa-chart-line"></i> Hard</span> , <span class="deep-orange-text h6"><i class="fas fa-exclamation-triangle"></i> Extreme</span> and <span class="red-text h6"><i class="fas fa-window-close"></i> Impossible</span>.</p>
 			<p>Each category will have <b class="text-info">atmost 10 Problems</b> at a time from either your <b class="text-info">Past Contests</b> or <b class="text-info">All Problemset</b>, sorted in <b class="text-info">increasing order of Rating</b>.</p> 
 		</div>
 	</div>
@@ -199,23 +199,66 @@
 	        These are Unattempted Problems from your <a class="alert-link"><i class="fab fa-cuttlefish"></i> Past Contests</a>.
 	    </div>	
 	</section>
+
+    <!-- Problems From Past Contest -->
 	<section id="idByContest">
 		{% for rating_category, problems in recommended_problems.rp_contest.items() %}
 			{% if problems|length > 0 %}
 			<br/>
 			<div class="card text-center">
-				<!-- <div class="card-header">
-					<b>
-	 -->				{% if rating_category == '1' %} <div class="light-green accent-2 card-header">
-					<b class="text-white">Easy (Want some <i class="fas fa-coffee"></i> Recreation ?)
+     				{% if rating_category == '1' %} <div class="light-green accent-2 card-header">
+					<b class="text-white">Easy (Want to <i class="fas fa-football-ball"></i> Warmup ?)
 					{% elif rating_category == '2' %} <div class="yellow lighten-1 card-header">
-					<b>Medium (Want to <i class="fas fa-football-ball"></i> Warmup ?)
+					<b>Medium (Want to <i class="fas fa-align-justify"></i> Maintain your Rating ?)
 					{% elif rating_category == '3' %} <div class="amber darken-3 card-header">
-					<b class="text-white">Hard (Want to <i class="fas fa-align-justify"></i> Maintain your Rating ?)
+					<b class="text-white">Hard (Want to <i class="fas fa-chart-line"></i> Improve your Rating ?)
 					{% elif rating_category == '4' %} <div class="deep-orange card-header">
-					<b class="text-white">Extreme (Want to <i class="fas fa-chart-line"></i> Improve your Rating ?)
+					<b class="text-white">Extreme (Want some <i class="fas fa-exclamation-triangle"></i> Adrenaline Rush ?)
 					{% elif rating_category == '5' %} <div class="red card-header">
-					<b class="text-white">Impossible (Want some <i class="fas fa-exclamation-triangle"></i> Adrenaline Rush ?)
+					<b class="text-white">Impossible (Want to prove Nothing is <i class="fas fa-window-close"></i> Impossible ?)
+					{% elif rating_category == '6' %} <div class="grey card-header">
+					<b>Unrated
+					{% endif %}
+					</b>
+				</div>
+
+                <div class="class-body">
+                    {% for problem in problems %}
+                        <p><b><a class="text-info" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}){% endif %}</a></b></p>
+                    {% endfor %}
+                </div>
+
+{#                <div class="card-footer text-muted">#}
+{#                    <div class="row">#}
+{#                        <div class="col-6 idRecommendedByContestPrevious" category="{{ rating_category }}" url="{{ url_for('previous') }}" data-toggle="tooltip" title="Previous">#}
+{#                            <i class="fas fa-chevron-circle-left"></i>#}
+{#                        </div>#}
+{#                        <div class="col-6 idRecommendedByContestNext" category="{{ rating_category }}" url="{{ url_for('next') }}" data-toggle="tooltip" title="Next">#}
+{#                            <i class="fas fa-chevron-circle-right"></i>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+			</div>
+			{% endif %}
+		{% endfor %}
+	</section>
+
+    <!-- Problems from Whole Problemset -->
+	<section id="idByProblemset" style="display: none;">
+		{% for rating_category, problems in recommended_problems.rp_all.items() %}
+			{% if problems|length > 0 and rating_category != 6 %}
+			<br/>
+			<div class="card text-center">
+				    {% if rating_category == '1' %} <div class="light-green accent-2 card-header">
+					<b class="text-white">Easy (Want to <i class="fas fa-football-ball"></i> Warmup ?)
+					{% elif rating_category == '2' %} <div class="yellow lighten-1 card-header">
+					<b>Medium (Want to <i class="fas fa-align-justify"></i> Maintain your Rating ?)
+					{% elif rating_category == '3' %} <div class="amber darken-3 card-header">
+					<b class="text-white">Hard (Want to <i class="fas fa-chart-line"></i> Improve your Rating ?)
+					{% elif rating_category == '4' %} <div class="deep-orange card-header">
+					<b class="text-white">Extreme (Want some <i class="fas fa-exclamation-triangle"></i> Adrenaline Rush ?)
+					{% elif rating_category == '5' %} <div class="red card-header">
+					<b class="text-white">Impossible (Want to prove Nothing is <i class="fas fa-window-close"></i> Impossible ?)
 					{% elif rating_category == '6' %} <div class="grey card-header">
 					<b>Unrated
 					{% endif %}
@@ -224,38 +267,6 @@
 				<div class="class-body">
 					{% for problem in problems %} 
 						<b><p><a class="text-info" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}){% endif %}</a></p></b>
-					{% endfor %}
-				</div>
-			</div>
-			{% endif %}
-		{% endfor %}
-	</section>
-
-	<section id="idByProblemset" style="display: none;">
-		{% for rating_category, problems in recommended_problems.rp_all.items() %}
-			{% if problems|length > 0 and rating_category != 6 %}
-			<br/>
-			<div class="card text-center">
-				<!-- <div class="card-header">
-					<b>
-	 -->				{% if rating_category == '1' %} <div class="light-green accent-2 card-header">
-					<b class="text-white">Easy (Want some <i class="fas fa-coffee"></i> Recreation ?)
-					{% elif rating_category == '2' %} <div class="yellow lighten-1 card-header">
-					<b>Medium (Want to <i class="fas fa-football-ball"></i> Warmup ?)
-					{% elif rating_category == '3' %} <div class="amber darken-3 card-header">
-					<b class="text-white">Hard (Want to <i class="fas fa-align-justify"></i> Maintain your Rating ?)
-					{% elif rating_category == '4' %} <div class="deep-orange card-header">
-					<b class="text-white">Extreme (Want to <i class="fas fa-chart-line"></i> Improve your Rating ?)
-					{% elif rating_category == '5' %} <div class="red card-header">
-					<b class="text-white">Impossible (Want some <i class="fas fa-exclamation-triangle"></i> Adrenaline Rush ?)
-					{% elif rating_category == '6' %} <div class="grey card-header">
-					<b>Unrated
-					{% endif %}
-					</b>
-				</div>
-				<div class="class-body">
-					{% for problem in problems %} 
-						<b><p><a class="text-info" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} (Rating: {{ problem[3] }})</a></p></b>
 					{% endfor %}
 				</div>
 			</div>

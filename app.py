@@ -1,5 +1,5 @@
 import requests, json, time
-from flask import Flask, render_template, request, flash, url_for
+from flask import Flask, render_template, request, flash, url_for, jsonify
 from helper_functions import generate_problem_link, get_title, get_rating_category, \
                              safeHitURL, parse_problems, recommender
   
@@ -170,9 +170,20 @@ def team_mode():
 			comment = response_data['comment']
 			flash(comment, 'danger')
 			return render_template('team_mode.html', status=status, comment=comment)
-		return render_template('team_mode.html')
 	else:
 		return render_template('team_mode.html') 
 
 
+@app.route("/next/", methods=['GET'])
+def next():
+	return jsonify("Hello Next.")
 
+
+@app.route("/previous/", methods=['GET'])
+def previous():
+	return jsonify("Hello Previous.")
+
+
+@app.route("/random/", methods=['GET'])
+def random():
+	pass
