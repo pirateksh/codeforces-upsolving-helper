@@ -9,13 +9,13 @@
 				<div class="col-6">
 					<div class="custom-control custom-radio">
 					<input class="custom-control-input" type="radio" id="radioUnsolved" name="problems"  checked>
-			  		<label class="custom-control-label" for="radioUnsolved"><i class="fas fa-underline"></i> Unsolved Problems</label>
+			  		<label style="cursor: pointer;" class="custom-control-label" for="radioUnsolved"><i class="fas fa-underline"></i> Unsolved Problems</label>
 			  		</div>
 				</div>
 				<div class="col-6">
 					<div class="custom-control custom-radio">
 					<input class="custom-control-input" type="radio" id="radioUnattempted" name="problems">
-			  		<label class="custom-control-label" for="radioUnattempted"><i class="fas fa-registered"></i> Recommended Problems</label>
+			  		<label style="cursor: pointer;" class="custom-control-label" for="radioUnattempted"><i class="fas fa-registered"></i> Recommended Problems</label>
 			  		</div>
 				</div>
 			</div>
@@ -39,13 +39,13 @@
 					<div class="col-6">
 						<div class="custom-control custom-radio">
 						<input class="custom-control-input" type="radio" id="radioByIndex" name="r"  checked>
-				  		<label class="custom-control-label" for="radioByIndex"><i class="fas fa-sort-alpha-down"></i> Index</label>
+				  		<label style="cursor: pointer;" class="custom-control-label" for="radioByIndex"><i class="fas fa-sort-alpha-down"></i> Index</label>
 				  		</div>
 					</div>
 					<div class="col-6">
 						<div class="custom-control custom-radio">
 						<input class="custom-control-input" type="radio" id="radioByRating" name="r">
-				  		<label class="custom-control-label" for="radioByRating"><i class="fas fa-chart-line"></i> Rating</label>
+				  		<label style="cursor: pointer;" class="custom-control-label" for="radioByRating"><i class="fas fa-chart-line"></i> Rating</label>
 				  		</div>
 					</div>
 				</div>
@@ -180,13 +180,13 @@
 					<div class="col-6">
 						<div class="custom-control custom-radio">
 						<input class="custom-control-input" type="radio" id="radioByContest" name="recommended"  checked>
-				  		<label class="custom-control-label" for="radioByContest"> <i class="fab fa-cuttlefish"></i> Past Contests</label>
+				  		<label style="cursor: pointer;" class="custom-control-label" for="radioByContest"> <i class="fab fa-cuttlefish"></i> Past Contests</label>
 				  		</div>
 					</div>
 					<div class="col-6">
 						<div class="custom-control custom-radio">
 						<input class="custom-control-input" type="radio" id="radioByProblemset" name="recommended">
-				  		<label class="custom-control-label" for="radioByProblemset"><i class="fab fa-autoprefixer"></i> All Problemset</label>
+				  		<label style="cursor: pointer;" class="custom-control-label" for="radioByProblemset"><i class="fab fa-autoprefixer"></i> All Problemset</label>
 				  		</div>
 					</div>
 				</div>
@@ -230,10 +230,10 @@
 
 {#                <div class="card-footer text-muted">#}
 {#                    <div class="row">#}
-{#                        <div class="col-6 idRecommendedByContestPrevious" category="{{ rating_category }}" url="{{ url_for('previous') }}" data-toggle="tooltip" title="Previous">#}
+{#                        <div class="col-6 classRecommendedByContestPrevious" category="{{ rating_category }}" data-toggle="tooltip" title="Previous">#}
 {#                            <i class="fas fa-chevron-circle-left"></i>#}
 {#                        </div>#}
-{#                        <div class="col-6 idRecommendedByContestNext" category="{{ rating_category }}" url="{{ url_for('next') }}" data-toggle="tooltip" title="Next">#}
+{#                        <div class="col-6 classRecommendedByContestNext" category="{{ rating_category }}" data-toggle="tooltip" title="Next">#}
 {#                            <i class="fas fa-chevron-circle-right"></i>#}
 {#                        </div>#}
 {#                    </div>#}
@@ -245,7 +245,7 @@
 
     <!-- Problems from Whole Problemset -->
 	<section id="idByProblemset" style="display: none;">
-		{% for rating_category, problems in recommended_problems.rp_all.items() %}
+		{% for rating_category, problems in recommended_problems.rp_all_ten.items() %}
 			{% if problems|length > 0 and rating_category != 6 %}
 			<br/>
 			<div class="card text-center">
@@ -264,11 +264,14 @@
 					{% endif %}
 					</b>
 				</div>
-				<div class="class-body">
+				<div id="idRecommenderByContestProblems-{{ rating_category }}" class="class-body">
 					{% for problem in problems %} 
-						<b><p><a class="text-info" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}){% endif %}</a></p></b>
+						<p><b><a class="text-info" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}){% endif %}</a></b></p>
 					{% endfor %}
 				</div>
+                <div style="cursor: pointer;" class="card-footer text-muted classRecommendedByProblemsetRandom" category="{{ rating_category }}" problems='{{ recommended_problems.rp_all }}' data-toggle="tooltip" title="Randomize">
+                    <strong><i class="fas fa-random"></i> Randomize</strong>
+                </div>
 			</div>
 			{% endif %}
 		{% endfor %}

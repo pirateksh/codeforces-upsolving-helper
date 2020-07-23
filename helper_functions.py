@@ -209,176 +209,181 @@ def parse_problems(solved_problem_set, unsolved_problem_set):
 
 
 def recommender(users, unsolved_problem_list, solved_problem_list):
-	"""
+    """
 
-	:param users:
-	:param unsolved_problem_list:
-	:param solved_problem_list:
-	:return:
-	"""
-	contest_set = set()
-	avg_user_rating = 0
-	avg_solved_problem_rating = 0
-	solved_problem_with_rating_count = 0
-	solved_contest_dict = {}
-	unsolved_contest_dict = {}
-	attempted_contest_dict = {}  # Attempted but unsolved
-	for user in users:
-		handle = user[0]
-		rating = user[1]
-		max_rating = user[2]
-		avg_user_rating += 0.7 * rating + 0.3 * max_rating
-		url, payload, timeout = 'https://codeforces.com/api/user.rating', {'handle': handle}, 10
-		response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE))
-		status = response_data['status']
+    :param users:
+    :param unsolved_problem_list:
+    :param solved_problem_list:
+    :return:
+    """
+    contest_set = set()
+    avg_user_rating = 0
+    avg_solved_problem_rating = 0
+    solved_problem_with_rating_count = 0
+    solved_contest_dict = {}
+    unsolved_contest_dict = {}
+    attempted_contest_dict = {}  # Attempted but unsolved
+    for user in users:
+        handle = user[0]
+        rating = user[1]
+        max_rating = user[2]
+        avg_user_rating += 0.7 * rating + 0.3 * max_rating
+        url, payload, timeout = 'https://codeforces.com/api/user.rating', {'handle': handle}, 10
+        response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE))
+        status = response_data['status']
 
-		if status == 'OK':
-			rating_changes = response_data['result']
-			for rating_change in rating_changes:
-				contestId = rating_change['contestId']
-				if contestId not in solved_contest_dict:
-					solved_contest_dict.update({int(contestId): []})
-					unsolved_contest_dict.update({int(contestId): []})
-					attempted_contest_dict.update({int(contestId): []})
-				contest_set.add(int(contestId))
-		else:
-			comment = response_data['comment']
-			flash(comment, 'danger')
-			return render_template('home.html', status=status, comment=comment)
+        if status == 'OK':
+            rating_changes = response_data['result']
+            for rating_change in rating_changes:
+                contestId = rating_change['contestId']
+                if contestId not in solved_contest_dict:
+                    solved_contest_dict.update({int(contestId): []})
+                    unsolved_contest_dict.update({int(contestId): []})
+                    attempted_contest_dict.update({int(contestId): []})
+                contest_set.add(int(contestId))
+        else:
+            comment = response_data['comment']
+            flash(comment, 'danger')
+            return render_template('home.html', status=status, comment=comment)
 
-	avg_user_rating /= len(users)
+    avg_user_rating /= len(users)
 
-	contest_set = sorted(contest_set)
+    contest_set = sorted(contest_set)
 
-	for solved_problem in solved_problem_list:
-		if 'contestId' in solved_problem:
-			contestId = solved_problem['contestId']
-			if int(contestId) in solved_contest_dict:
-				solved_contest_dict[int(contestId)].append(solved_problem)
+    for solved_problem in solved_problem_list:
+        if 'contestId' in solved_problem:
+            contestId = solved_problem['contestId']
+            if int(contestId) in solved_contest_dict:
+                solved_contest_dict[int(contestId)].append(solved_problem)
 
-		# Calculating Average Solved Problem Rating
-		if 'rating' in solved_problem:
-			rating = int(solved_problem['rating'])
-			avg_solved_problem_rating += rating
-			solved_problem_with_rating_count += 1
+        # Calculating Average Solved Problem Rating
+        if 'rating' in solved_problem:
+            rating = int(solved_problem['rating'])
+            avg_solved_problem_rating += rating
+            solved_problem_with_rating_count += 1
 
-	avg_solved_problem_rating /= solved_problem_with_rating_count
+    avg_solved_problem_rating /= solved_problem_with_rating_count
 
-	final_rating = math.ceil(0.8 * avg_user_rating + 0.2 * avg_solved_problem_rating)
-	print(f"User Rating = {avg_user_rating} Solved Rating = {avg_solved_problem_rating}")
-	print(f"Final Rating = {final_rating}")
+    final_rating = math.ceil(0.8 * avg_user_rating + 0.2 * avg_solved_problem_rating)
+    print(f"User Rating = {avg_user_rating} Solved Rating = {avg_solved_problem_rating}")
+    print(f"Final Rating = {final_rating}")
 
-	for unsolved_problem in unsolved_problem_list:
-		if 'contestId' in unsolved_problem:
-			contestId = unsolved_problem['contestId']
-			if int(contestId) in attempted_contest_dict:
-				attempted_contest_dict[int(contestId)].append(unsolved_problem)
+    for unsolved_problem in unsolved_problem_list:
+        if 'contestId' in unsolved_problem:
+            contestId = unsolved_problem['contestId']
+            if int(contestId) in attempted_contest_dict:
+                attempted_contest_dict[int(contestId)].append(unsolved_problem)
 
-	# problems_dict = json.loads(allProblems())
-	# all_problems = problems_dict['problems']
-	# problems_statistics = problems_dict['problemStatistics']
-	all_problems = PROBLEM_RESPONSE['problems']
-	problems_statistics = PROBLEM_RESPONSE['problemStatistics']
+    # problems_dict = json.loads(allProblems())
+    # all_problems = problems_dict['problems']
+    # problems_statistics = problems_dict['problemStatistics']
+    all_problems = PROBLEM_RESPONSE['problems']
+    # problems_statistics = PROBLEM_RESPONSE['problemStatistics']
 
-	# for problem, stats in zip(all_problems, problems_statistics):
-	for problem in all_problems:
-		# Separating for Problem Recommender (past Contests)
-		if 'contestId' in problem:
-			contestId = problem['contestId']
-			# solvedCount = stats['solvedCount']
-			if int(contestId) in solved_contest_dict:
-				if problem not in solved_contest_dict[int(contestId)]:
-					if problem not in attempted_contest_dict[int(contestId)]:
-						unsolved_contest_dict[int(contestId)].append(problem)
+    # for problem, stats in zip(all_problems, problems_statistics):
+    for problem in all_problems:
+        # Separating for Problem Recommender (past Contests)
+        if 'contestId' in problem:
+            contestId = problem['contestId']
+            # solvedCount = stats['solvedCount']
+            if int(contestId) in solved_contest_dict:
+                if problem not in solved_contest_dict[int(contestId)]:
+                    if problem not in attempted_contest_dict[int(contestId)]:
+                        unsolved_contest_dict[int(contestId)].append(problem)
 
-	recommended_problems_contest = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
-	for contestId in unsolved_contest_dict:
-		for problem in unsolved_contest_dict[contestId]:
-			if 'rating' in problem:
-				category = recommender_category(final_rating, int(problem['rating']))
-				contestId = str(problem['contestId']) if 'contestId' in problem else -1
-				problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
-				index = str(problem['index'])
-				name = str(problem['name'])
-				rating = problem['rating'] if 'rating' in problem else INF
-				link = generate_problem_link(problemset_name, contestId, index)
-				if len(recommended_problems_contest[category]) < 10:
-					recommended_problems_contest[category].append([index, name, link, rating])
+    recommended_problems_contest = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
+    for contestId in unsolved_contest_dict:
+        for problem in unsolved_contest_dict[contestId]:
+            if 'rating' in problem:
+                category = recommender_category(final_rating, int(problem['rating']))
+                contestId = str(problem['contestId']) if 'contestId' in problem else -1
+                problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
+                index = str(problem['index'])
+                name = str(problem['name'])
+                rating = problem['rating'] if 'rating' in problem else INF
+                link = generate_problem_link(problemset_name, contestId, index)
+                if len(recommended_problems_contest[category]) < 10:
+                    recommended_problems_contest[category].append([index, name, link, rating])
 
-	for category in recommended_problems_contest:
-		recommended_problems_contest[category] = sorted(recommended_problems_contest[category], key=lambda prblm: prblm[3])
+    for category in recommended_problems_contest:
+        recommended_problems_contest[category] = sorted(recommended_problems_contest[category],
+                                                        key=lambda prblm: prblm[3])
 
-	# Problem Recommender All Problems
-	temp_recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
+    # Problem Recommender All Problems
+    temp_recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
 
-	for problem in all_problems:
-		if problem not in solved_problem_list:
-			if problem not in unsolved_problem_list:
-				if 'rating' in problem:
-					category = recommender_category(final_rating, int(problem['rating']))
-				else:
-					category = '6'
-				contestId = str(problem['contestId']) if 'contestId' in problem else -1
-				problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
-				index = str(problem['index'])
-				name = str(problem['name'])
-				rating = problem['rating'] if 'rating' in problem else INF
-				link = generate_problem_link(problemset_name, contestId, index)
-				temp_recommended_problems_all[category].append([index, name, link, rating])
+    for problem in all_problems:
+        if problem not in solved_problem_list:
+            if problem not in unsolved_problem_list:
+                if 'rating' in problem:
+                    category = recommender_category(final_rating, int(problem['rating']))
+                else:
+                    category = '6'
+                contestId = str(problem['contestId']) if 'contestId' in problem else -1
+                problemset_name = problem['problemsetName'] if 'problemsetName' in problem else ""
+                index = str(problem['index'])
+                name = str(problem['name'])
+                rating = problem['rating'] if 'rating' in problem else INF
+                link = generate_problem_link(problemset_name, contestId, index)
+                temp_recommended_problems_all[category].append([index, name, link, rating])
 
-	# Final List of Random Problems from Complete Problemset.
-	recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
-	for category in temp_recommended_problems_all:
-		total = len(temp_recommended_problems_all[category])
-		if total != 0:
-			for i in range(0, 10):
-				random_problem = random.randint(0, total - 1)
-				if temp_recommended_problems_all[category][random_problem] not in recommended_problems_all[category]:
-					recommended_problems_all[category].append(temp_recommended_problems_all[category][random_problem])
+    # Final List of Random Problems from Complete Problemset.
+    recommended_problems_all = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': []}
+    for category in temp_recommended_problems_all:
+        total = len(temp_recommended_problems_all[category])
+        if total != 0:
+            for i in range(0, 10):
+                random_problem = random.randint(0, total - 1)
+                if temp_recommended_problems_all[category][random_problem] not in recommended_problems_all[category]:
+                    recommended_problems_all[category].append(temp_recommended_problems_all[category][random_problem])
 
-	for category in recommended_problems_all:
-		recommended_problems_all[category] = sorted(recommended_problems_all[category], key=lambda prblm: prblm[3])
+    for category in recommended_problems_all:
+        recommended_problems_all[category] = sorted(recommended_problems_all[category], key=lambda prblm: prblm[3])
 
-	return json.dumps({
-		'rp_contest': recommended_problems_contest,
-		'rp_all': recommended_problems_all,
-	})
+    for category in temp_recommended_problems_all:
+        temp_recommended_problems_all[category] = sorted(temp_recommended_problems_all[category], key=lambda prblm: prblm[3])
+
+    return json.dumps({
+        'rp_contest': recommended_problems_contest,
+        'rp_all_ten': recommended_problems_all,  # Only Ten Problems to be shown first.
+        'rp_all': json.dumps(temp_recommended_problems_all),  # All problems to be passed to AJAX call for randomization.
+    })
 
 
 def recommender_category(user_rating, problem_rating):
-	category = ''
-	if user_rating >= 2000:
-		if problem_rating <= user_rating - 300:
-			category = '1'
-		elif problem_rating <= user_rating + 200:
-			category = '2'
-		elif problem_rating <= user_rating + 400:
-			category = '3'
-		elif problem_rating <= user_rating + 700:
-			category = '4'
-		else:
-			category = '5'
-	else:
-		if problem_rating <= user_rating - 100:
-			category = '1'
-		elif problem_rating <= user_rating + 200:
-			category = '2'
-		elif problem_rating <= user_rating + 400:
-			category = '3'
-		elif problem_rating <= user_rating + 600:
-			category = '4'
-		else:
-			category = '5'
-	return category
+    category = ''
+    if user_rating >= 2000:
+        if problem_rating <= user_rating - 300:
+            category = '1'
+        elif problem_rating <= user_rating + 200:
+            category = '2'
+        elif problem_rating <= user_rating + 400:
+            category = '3'
+        elif problem_rating <= user_rating + 700:
+            category = '4'
+        else:
+            category = '5'
+    else:
+        if problem_rating <= user_rating - 100:
+            category = '1'
+        elif problem_rating <= user_rating + 200:
+            category = '2'
+        elif problem_rating <= user_rating + 400:
+            category = '3'
+        elif problem_rating <= user_rating + 600:
+            category = '4'
+        else:
+            category = '5'
+    return category
 
 
 # def allProblems():
-# url = 'https://codeforces.com/api/problemset.problems'
-# response_data = json.loads(safeHitURL(url=url))
-# status = response_data['status']
-# if status == 'OK':
-# 	return json.dumps(response_data['result'])
-# else:
-# 	comment = response_data['comment']
-# 	flash(comment, 'danger')
-# 	return render_template('home.html', status=status, comment=comment)
+#     url = 'https://codeforces.com/api/problemset.problems'
+#     response_data = json.loads(safeHitURL(url=url))
+#     status = response_data['status']
+#     if status == 'OK':
+#         return json.dumps(response_data['result'])
+#     else:
+#         comment = response_data['comment']
+#         flash(comment, 'danger')
+#         return render_template('home.html', status=status, comment=comment)

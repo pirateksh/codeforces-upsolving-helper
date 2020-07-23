@@ -93,23 +93,78 @@
     }
 </script>
 
-<!-- AJAX Calls -->
-<script>/*
-    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    $('.idRecommendedByContestPrevious').click(function (e) {
+
+<script>
+    /*
+    $('.classRecommendedByContestPrevious').click(function (e) {
         let _this = $(this);
-        let url = `http://127.0.0.1:5000/previous/`;
-        console.log(`Previous is clicked for category ${_this.attr('category')} for URL ${url}`);
-        $.getJSON(`${url}`, {}, function(data) {
-            console.log(data.result);
-        });
+        let category = _this.attr('category');
+        console.log(`Previous is clicked for category ${category}.`);
+        $.ajax({
+			url: '',
+			type: 'GET',
+            data: {
+			    test: `Test Previous Category ${category}.`
+            },
+			success: function(response){
+				console.log(response);
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
         return false;
     });
 
-    $('.idRecommendedByContestNext').click(function (e) {
+    $('.classRecommendedByContestNext').click(function (e) {
         let _this = $(this);
-        console.log(`Next is clicked for category ${_this.attr('category')}`);
+        let category = _this.attr('category');
+        console.log(`Next is clicked for category ${category}.`);
+        $.ajax({
+			url: '',
+			type: 'GET',
+            data: {
+			    test: `Test Next Category ${category}.`
+            },
+			success: function(response){
+				console.log(response);
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+        return false;
     });*/
+
+    $('.classRecommendedByProblemsetRandom').click(function (e) {
+        let _this = $(this);
+        let category = _this.attr('category');
+        let problems = _this.attr('problems');
+        let problemDivId = `#idRecommenderByContestProblems-${category}`;
+        let problemDiv = $(problemDivId);
+        console.log(`Randomize is clicked for category ${category}.`);
+        let problemsJson = JSON.parse(problems);
+        let problemCategory = problemsJson[category];
+        let totalProblems = problemCategory.length;
+        let arr = [];
+        while(arr.length < 10){
+            let r = Math.floor(Math.random() * totalProblems);
+            if(arr.indexOf(r) === -1) arr.push(r);
+        }
+        arr.sort((a,b)=>a-b); // Sorting Numerically
+        let toAppend = "";
+        for(let i = 0; i < 10; ++i) {
+            let problem = problemCategory[arr[i]], temp;
+            if(category !== '6') {
+                temp = `<p><b><a class="text-info" href="${problem[2]}" target="_blank">${problem[0]} - ${problem[1]} (Rating: ${problem[3]})</a></b><p>`;
+            } else {
+                temp = `<p><b><a class="text-info" href="${problem[2]}" target="_blank">${problem[0]} - ${problem[1]}</a></b><p>`;
+            }
+            toAppend += temp;
+        }
+        problemDiv.html(toAppend);
+        return false;
+    })
 </script>
-<!-- AJAX Calls Ends -->
+
 
