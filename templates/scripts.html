@@ -134,12 +134,12 @@
 			}
 		});
         return false;
-    });*/
+    });
 
     $('.classRecommendedByProblemsetRandom').click(function (e) {
         let _this = $(this);
         let category = _this.attr('category');
-        let problems = _this.attr('problems');
+        let problems = $('#idByProblemset').attr('problems');
         let problemDivId = `#idRecommenderByContestProblems-${category}`;
         let problemDiv = $(problemDivId);
         console.log(`Randomize is clicked for category ${category}.`);
@@ -164,7 +164,7 @@
         }
         problemDiv.html(toAppend);
         return false;
-    })
+    })*/
 </script>
 
 
