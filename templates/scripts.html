@@ -135,36 +135,7 @@
 		});
         return false;
     });
-
-    $('.classRecommendedByProblemsetRandom').click(function (e) {
-        let _this = $(this);
-        let category = _this.attr('category');
-        let problems = $('#idByProblemset').attr('problems');
-        let problemDivId = `#idRecommenderByContestProblems-${category}`;
-        let problemDiv = $(problemDivId);
-        console.log(`Randomize is clicked for category ${category}.`);
-        let problemsJson = JSON.parse(problems);
-        let problemCategory = problemsJson[category];
-        let totalProblems = problemCategory.length;
-        let arr = [];
-        while(arr.length < 10){
-            let r = Math.floor(Math.random() * totalProblems);
-            if(arr.indexOf(r) === -1) arr.push(r);
-        }
-        arr.sort((a,b)=>a-b); // Sorting Numerically
-        let toAppend = "";
-        for(let i = 0; i < 10; ++i) {
-            let problem = problemCategory[arr[i]], temp;
-            if(category !== '6') {
-                temp = `<p><b><a class="text-info" href="${problem[2]}" target="_blank">${problem[0]} - ${problem[1]} (Rating: ${problem[3]})</a></b><p>`;
-            } else {
-                temp = `<p><b><a class="text-info" href="${problem[2]}" target="_blank">${problem[0]} - ${problem[1]}</a></b><p>`;
-            }
-            toAppend += temp;
-        }
-        problemDiv.html(toAppend);
-        return false;
-    })*/
+    */
 </script>
 
 
