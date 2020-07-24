@@ -86,7 +86,7 @@
 										{% if user_info.last_name %} {{ user_info.last_name }} {% endif %}
 									</h4>
 									<h5>{% if user_info.organization %} Organization: {{ user_info.organization }} {% endif %}</h5>
-									
+									<h5>{% if user_info.country %} Country: {{ user_info.country }} {% endif %}</h5>
 									{% if unsolved_info.total_unsolved > 0 %}
 										Scroll further down to see Unsolved or Recommended Problems. 
 									{% else %}

@@ -17,6 +17,7 @@ def home_view():
 	if request.method == 'POST':
 
 		handle = request.form['user_handle']
+		print(f"Entered Handle is {handle}.")
 		url, payload, timeout = 'https://codeforces.com/api/user.status', {'handle': handle}, 10
 		try:
 			response_data = json.loads(safeHitURL(url=url, payload=payload, timeout=timeout, template=HOME_TEMPLATE))
@@ -38,7 +39,6 @@ def home_view():
 			for submission in submissions:
 				verdict = submission['verdict'] if 'verdict' in submission else 'QUEUED'
 				problem = submission['problem']
-				handle = submission['author']['members'][0]['handle']
 				if verdict == 'OK':
 					solved_problem_set.add(json.dumps(problem))
 				elif verdict == 'QUEUED':
@@ -60,7 +60,7 @@ def home_view():
 			user_info_full = response_data['result'][0]
 			user_info = {
 				# User information to send to template.
-				'handle': handle,
+				'handle': user_info_full['handle'],
 				'first_name': user_info_full['firstName'] if 'firstName' in user_info_full else "",
 				'last_name': user_info_full['lastName'] if 'lastName' in user_info_full else "",
 				'rating': user_info_full['rating'] if 'rating' in user_info_full else 0,
@@ -72,6 +72,7 @@ def home_view():
 				'max_color': get_title(int(user_info_full['maxRating']))[
 					1] if 'maxRating' in user_info_full else "text-dark",
 				'organization': user_info_full['organization'] if 'organization' in user_info_full else "",
+				'country': user_info_full['country'] if 'country' in user_info_full else "",
 			}
 			user_rating = user_info_full['rating'] if 'rating' in user_info_full else 0
 			max_user_rating = user_info_full['maxRating'] if 'maxRating' in user_info_full else 0
