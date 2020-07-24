@@ -244,7 +244,7 @@
 	</section>
 
     <!-- Problems from Whole Problemset -->
-    <!-- problems='{{ recommended_problems.rp_all }}' -->
+    <!-- problems='' -->
 	<section id="idByProblemset" style="display: none;">
 		{% for rating_category, problems in recommended_problems.rp_all_ten.items() %}
 			{% if problems|length > 0 and rating_category != 6 %}
@@ -270,9 +270,9 @@
 						<p><b><a class="text-info" href="{{ problem[2] }}" target="_blank">{{ problem[0] }} - {{ problem[1] }} {% if problem[3] < 10000 %}(Rating: {{ problem[3] }}){% endif %}</a></b></p>
 					{% endfor %}
 				</div>
-                <!-- <div style="cursor: pointer;" class="card-footer text-muted classRecommendedByProblemsetRandom" category="{{ rating_category }}" data-toggle="tooltip" title="Randomize">
+                <div style="cursor: pointer;" class="card-footer text-muted classRecommendedByProblemsetRandom" category="{{ rating_category }}" data-toggle="tooltip" title="Randomize">
                     <strong><i class="fas fa-random"></i> Randomize</strong>
-                </div> -->
+                </div>
 			</div>
 			{% endif %}
 		{% endfor %}
