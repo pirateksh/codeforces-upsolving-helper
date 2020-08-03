@@ -197,6 +197,12 @@
 	<section id="recommendedInfo">
 		<div class="text-center alert alert-primary flash alert-dismissible fade show" role="alert">
 	        These are Unattempted Problems from your <a class="alert-link"><i class="fab fa-cuttlefish"></i> Past Contests</a>.
+	        <br/>
+	        <a class="alert-link">Note: </a>A few <a class="alert-link"> recently</a> solved problems might appear here as unsolved.
+	        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#recommendedClarificationModal">
+            	<i class="fas fa-flushed"></i> Why?
+			</button>
+	        {% include 'modal_recommended_clarification.html' %}
 	    </div>	
 	</section>
 
