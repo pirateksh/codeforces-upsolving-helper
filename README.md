@@ -11,3 +11,6 @@ A web app developed using Flask that compiles all the Problems on Codeforces tha
 * Feel free to raise issues regarding bugs/improvement.
 * Star the repository if it helped you in any way.
 * Good Luck and High Rating!
+
+## Contributor
+* <a href="https://github.com/pirateksh">Kshitiz Srivastava</a>
